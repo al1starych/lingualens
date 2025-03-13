@@ -1,6 +1,6 @@
 # LinguaLens
 
-![LinguaLens Logo](https://via.placeholder.com/150) <!-- Replace with actual logo URL if available -->
+![LinguaLens Logo](https://i.imgur.com/aak0ooW.png) 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.8+-brightgreen)](https://www.python.org/)
