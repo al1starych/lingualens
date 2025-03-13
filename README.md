@@ -59,6 +59,7 @@ Try it live: [LinguaLens Demo](#) <!-- Replace with actual hosted URL if availab
 
 3. **Configure the API Key**
 - Open `app.py` and replace the placeholder API key:
+  
      ```python
      genai.configure(api_key="YOUR_API_KEY_HERE")
      ```
