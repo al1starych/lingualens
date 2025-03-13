@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinguaLens | Learn Languages with Birkenbihl Method</title>
+  <meta name="description" content="LinguaLens helps you learn foreign languages more effectively using the Birkenbihl method - decoding languages word by word">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #5b68ff;
+      --primary-dark: #4355f0;
+      --primary-light: #e8ebff;
+      --secondary: #ff6b6b;
+      --secondary-dark: #ff5252;
+      --text: #2a2f45;
+      --text-light: #6c757d;
+      --bg: #fcfdff;
+      --card-bg: #ffffff;
+      --border: #e4e8f0;
+      --success: #28a745;
+      --info: #17a2b8;
+      --warning: #ffc107;
+      --danger: #dc3545;
+    }
+    .dark-mode {
+      --primary: #7c86ff;
+      --primary-dark: #6169ff;
+      --primary-light: #282f60;
+      --secondary: #ff8585;
+      --secondary-dark: #ff6969;
+      --text: #f1f3f5;
+      --text-light: #adb5bd;
+      --bg: #121826;
+      --card-bg: #1e293b;
+      --border: #2c3a52;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: all 0.3s ease;
+    }
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeIn 0.8s ease;
+    }
+    .logo-container {
+      margin-bottom: 1rem;
+      display: inline-block;
+      position: relative;
+    }
+    .logo-text {
+      font-size: 3.5rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      animation: pulse 5s infinite alternate;
+    }
+    .logo-badge {
+      position: absolute;
+      top: -5px;
+      right: -40px;
+      background: var(--secondary);
+      color: white;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+      transform: rotate(15deg);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    .tagline {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    .info-box {
+      background: var(--primary-light);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: flex-start;
+      animation: slideUp 0.8s ease;
+      box-shadow: 0 4px 6px rgba(91, 104, 255, 0.1);
+    }
+    .info-icon {
+      margin-right: 1rem;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+    .info-content h3 {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .info-content p {
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .controls-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      animation: slideUp 0.6s ease;
+    }
+    .language-controls {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .language-selector {
+      display: flex;
+      flex-direction: column;
+      min-width: 200px;
+    }
+    .language-selector label {
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .language-selector label i {
+      margin-right: 0.5rem;
+      color: var(--primary);
+    }
+    .quick-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .action-btn {
+      padding: 0.5rem 1rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+    .action-btn i {
+      margin-right: 0.5rem;
+    }
+    .action-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    select {
+      padding: 0.85rem 1.2rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      color: var(--text);
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.6%205.4-7.9%205.4-12.9%200-5-1.9-9.2-5.5-12.7z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem top 50%;
+      background-size: 0.65rem auto;
+      padding-right: 2.5rem;
+    }
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91, 104, 255, 0.2);
+    }
+    .input-area {
+      margin-bottom: 2rem;
+      animation: slideUp 0.6s ease;
+    }
+    .textarea-container {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      color: var(--text);
+      background-color: var(--card-bg);
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91, 104, 255, 0.2);
+    }
+    .character-count {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      pointer-events: none;
+    }
+    .example-texts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .example-text {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.75rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .example-text:hover {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    button.primary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 2.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: linear-gradient(90deg, var(--primary), #7664ff);
+      color: white;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(91, 104, 255, 0.3);
+    }
+    button.primary-button i {
+      margin-right: 0.5rem;
+    }
+    button.primary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(91, 104, 255, 0.4);
+    }
+    button.primary-button:active {
+      transform: translateY(0);
+    }
+    button.secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--card-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button.secondary-button i {
+      margin-right: 0.5rem;
+    }
+    button.secondary-button:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-light);
+    }
+    .output-area {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      margin-top: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .output-area.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .output-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .output-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .output-action {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+    }
+    .output-action i {
+      margin-right: 0.3rem;
+    }
+    .output-action:hover {
+      color: var(--primary-dark);
+    }
+    .sentence-block {
+      margin-bottom: 2rem;
+      padding: 2rem 2rem 2.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .sentence-block:hover {
+      background-color: var(--primary-light);
+      border-radius: 0.5rem;
+    }
+    .sentence-block:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .sentence-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .sentence-number {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+    .original {
+      font-size: 1.35rem;
+      margin-bottom: 1rem;
+      line-height: 1.8;
+      font-weight: 500;
+    }
+    .word-mapping {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      line-height: 1.8;
+    }
+    .translation {
+      font-size: 1rem;
+      color: var(--text-light);
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+    .word {
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0 0.1rem;
+      border-radius: 0.2rem;
+    }
+    .word:hover {
+      color: var(--secondary);
+      background-color: rgba(255, 107, 107, 0.1);
+    }
+    .tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--primary-light);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .word:hover .tooltip {
+      opacity: 1;
+    }
+    .sentence-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .sentence-action {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .sentence-action i {
+      margin-right: 0.3rem;
+    }
+    .sentence-action:hover {
+      color: var(--primary);
+    }
+    /* Per-sentence speak button positioned at bottom right */
+    .speak-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      border: none;
+      background: var(--primary-light);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .speak-btn:hover {
+      background: var(--primary);
+    }
+
+    .speak-btn i {
+      color: var(--primary);
+    }
+
+    .speak-btn:hover i {
+      color: #fff;
+    }
+    
+    .speak-btn img {
+      width: 20px;
+      height: 20px;
+    }
+    .loading {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      gap: 1rem;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(91, 104, 255, 0.2);
+      border-left-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .loading-text {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    .processing-steps {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+    .processing-step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .processing-step.completed {
+      color: var(--success);
+    }
+    .processing-step i {
+      margin-right: 0.4rem;
+    }
+    .error {
+      color: var(--danger);
+      text-align: center;
+      padding: 2rem;
+      background-color: rgba(220, 53, 69, 0.1);
+      border-radius: 0.5rem;
+    }
+    .error i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .error h3 {
+      margin-bottom: 0.5rem;
+    }
+    .error p {
+      margin-bottom: 1rem;
+    }
+    .retry-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .retry-btn i {
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .retry-btn:hover {
+      background: #c82333;
+    }
+    .saved-translations {
+      background: var(--card-bg);
+      border-radius: 1rem;
+      margin-top: 2rem;
+      padding: 1.5rem;
+      animation: fadeIn 0.8s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      display: none;
+    }
+    .saved-translations.visible {
+      display: block;
+    }
+    .saved-translations h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+    .saved-translations h2 i {
+      margin-right: 0.5rem;
+      color: var(--primary);
+    }
+    .saved-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .saved-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .saved-item:hover {
+      background-color: var(--primary-light);
+    }
+    .saved-item:last-child {
+      border-bottom: none;
+    }
+    .saved-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .saved-item-lang {
+      font-weight: 500;
+    }
+    .saved-item-date {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+    .saved-item-text {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .no-saved {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+    }
+    .no-saved i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .theme-toggle:hover {
+      color: var(--primary);
+      transform: rotate(15deg);
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1.5rem;
+      color: var(--text-light);
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    footer p {
+      margin-bottom: 1rem;
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-link {
+      font-size: 1.2rem;
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+    .social-link:hover {
+      color: var(--primary);
+      transform: translateY(-3px);
+    }
+    
+    /* Grammar button and explanation styles */
+    .grammar-btn {
+      position: absolute;
+      bottom: 45px;
+      right: 10px;
+      border: none;
+      background: var(--primary-light);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .grammar-btn:hover {
+      background: var(--primary);
+    }
+    
+    .grammar-btn i {
+      color: var(--primary-dark);
+    }
+    
+    .grammar-btn:hover i {
+      color: white;
+    }
+    
+    .grammar-explanation {
+      display: none;
+      background: var(--card-bg);
+      border-left: 3px solid var(--primary);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .grammar-explanation.visible {
+      display: block;
+    }
+    
+    .grammar-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+    }
+    
+    .grammar-title i {
+      margin-right: 0.5rem;
+    }
+    
+    .grammar-loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      color: var(--text-light);
+    }
+    
+    .grammar-loading i {
+      margin-right: 0.5rem;
+    }
+    
+    .grammar-point {
+      margin-bottom: 0.75rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    
+    .grammar-point:before {
+      content: "•";
+      position: absolute;
+      left: 0.5rem;
+      color: var(--primary);
+      font-weight: bold;
+    }
+    
+    .grammar-highlight {
+      background-color: rgba(91, 104, 255, 0.1);
+      color: var(--primary-dark);
+      padding: 0 0.3rem;
+      border-radius: 0.2rem;
+      font-weight: 500;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      .logo-text {
+        font-size: 2.5rem;
+      }
+      .tagline {
+        font-size: 1.1rem;
+      }
+      .language-controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      .language-selector {
+        width: 100%;
+      }
+      .output-area {
+        padding: 1.5rem;
+      }
+      .sentence-block {
+        padding: 1.5rem 1.5rem 2.5rem 1.5rem;
+      }
+      .original, .word-mapping {
+        font-size: 1.1rem;
+      }
+      .btn-container {
+        flex-direction: column;
+      }
+      .output-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .output-actions {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-controls">
+      <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button id="saved-toggle" class="action-btn">
+        <i class="fas fa-history"></i> History
+      </button>
+    </div>
+    <header>
+      <div class="logo-container">
+        <h1 class="logo-text">LinguaLens</h1>
+        <span class="logo-badge">Beta</span>
+      </div>
+      <p class="tagline">Decode foreign languages with the Birkenbihl method and learn more effectively</p>
+    </header>
+    <div class="info-box">
+      <div class="info-icon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <div class="info-content">
+        <h3>About the Birkenbihl Method</h3>
+        <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making it easier to read in a foreign language while naturally internalizing grammar patterns.</p>
+      </div>
+    </div>
+    <div class="controls-container">
+      <div class="language-controls">
+        <div class="language-selector">
+          <label for="source-lang"><i class="fas fa-globe"></i> Source language:</label>
+          <select id="source-lang">
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
+            <option value="zh">Chinese</option>
+            <option value="ar">Arabic</option>
+            <option value="pt">Portuguese</option>
+            <option value="hi">Hindi</option>
+            <option value="ko">Korean</option>
+            <option value="tr">Turkish</option>
+            <option value="nl">Dutch</option>
+            <option value="pl">Polish</option>
+            <option value="sv">Swedish</option>
+            <option value="vi">Vietnamese</option>
+            <option value="th">Thai</option>
+            <option value="el">Greek</option>
+            <option value="cs">Czech</option>
+            <option value="ro">Romanian</option>
+            <option value="hu">Hungarian</option>
+            <option value="fi">Finnish</option>
+            <option value="da">Danish</option>
+            <option value="bg">Bulgarian</option>
+            <option value="sk">Slovak</option>
+            <option value="lt">Lithuanian</option>
+            <option value="sl">Slovenian</option>
+            <option value="lv">Latvian</option>
+            <option value="et">Estonian</option>
+            <option value="hr">Croatian</option>
+            <option value="sr">Serbian</option>
+            <option value="ukr">Ukrainian</option>
+            <option value="he">Hebrew</option>
+            <option value="id">Indonesian</option>
+            <option value="ms">Malay</option>
+            <option value="fil">Filipino</option>
+            <option value="sw">Swahili</option>
+            <option value="af">Afrikaans</option>
+            <option value="sq">Albanian</option>
+          </select>
+        </div>
+        <div class="language-selector">
+          <label for="target-lang"><i class="fas fa-user"></i> Your language:</label>
+          <select id="target-lang">
+            <option value="en">English</option>
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
+            <option value="zh">Chinese</option>
+            <option value="ar">Arabic</option>
+            <option value="pt">Portuguese</option>
+            <option value="hi">Hindi</option>
+            <option value="ko">Korean</option>
+            <option value="tr">Turkish</option>
+            <option value="nl">Dutch</option>
+            <option value="pl">Polish</option>
+            <option value="sv">Swedish</option>
+            <option value="vi">Vietnamese</option>
+            <option value="th">Thai</option>
+            <option value="el">Greek</option>
+            <option value="cs">Czech</option>
+            <option value="ro">Romanian</option>
+            <option value="hu">Hungarian</option>
+            <option value="fi">Finnish</option>
+            <option value="da">Danish</option>
+            <option value="bg">Bulgarian</option>
+            <option value="sk">Slovak</option>
+            <option value="lt">Lithuanian</option>
+            <option value="sl">Slovenian</option>
+            <option value="lv">Latvian</option>
+            <option value="et">Estonian</option>
+            <option value="hr">Croatian</option>
+            <option value="sr">Serbian</option>
+            <option value="ukr">Ukrainian</option>
+            <option value="he">Hebrew</option>
+            <option value="id">Indonesian</option>
+            <option value="ms">Malay</option>
+            <option value="fil">Filipino</option>
+            <option value="sw">Swahili</option>
+            <option value="af">Afrikaans</option>
+            <option value="sq">Albanian</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="quick-actions">
+        <button class="action-btn" id="swap-languages">
+          <i class="fas fa-exchange-alt"></i> Swap Languages
+        </button>
+        <button class="action-btn" id="clear-text">
+          <i class="fas fa-trash-alt"></i> Clear Text
+        </button>
+      </div>
+      <div class="input-area">
+        <div class="textarea-container">
+          <textarea id="source-text" placeholder="Paste your text in a foreign language here..."></textarea>
+          <div class="character-count">0 / 5000</div>
+        </div>
+        
+        <div class="example-texts">
+          <div class="example-text" data-lang="fr">Simple French example</div>
+          <div class="example-text" data-lang="es">Simple Spanish example</div>
+          <div class="example-text" data-lang="de">Simple German example</div>
+          <div class="example-text" data-lang="it">Simple Italian example</div>
+        </div>
+        
+        <div class="btn-container">
+          <button id="process-btn" class="primary-button">
+            <i class="fas fa-magic"></i> Process Text
+          </button>
+          <button id="save-btn" class="secondary-button">
+            <i class="fas fa-bookmark"></i> Save Translation
+          </button>
+        </div>
+      </div>
+      <div class="output-area" id="results-container">
+        <!-- Results will appear here -->
+      </div>
+      
+      <div class="saved-translations" id="saved-container">
+        <h2><i class="fas fa-history"></i> Saved Translations</h2>
+        <div class="saved-list" id="saved-list">
+          <!-- Saved translations will appear here -->
+          <div class="no-saved">
+            <i class="fas fa-folder-open"></i>
+            <p>No saved translations yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>Made with ❤️ for language learners everywhere</p>
+      <p>The Birkenbihl method was developed by Vera F. Birkenbihl to make language learning more intuitive and effective</p>
+      <div class="social-links">
+        <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
+      </div>
+    </footer>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Theme toggle functionality
+      const themeToggle = document.getElementById("theme-toggle");
+      const themeIcon = themeToggle.querySelector("i");
+      
+      themeToggle.addEventListener("click", function() {
+        document.body.classList.toggle("dark-mode");
+        if (document.body.classList.contains("dark-mode")) {
+          themeIcon.classList.remove("fa-moon");
+          themeIcon.classList.add("fa-sun");
+        } else {
+          themeIcon.classList.remove("fa-sun");
+          themeIcon.classList.add("fa-moon");
+        }
+        // Save theme preference
+        localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode"));
+      });
+      
+      // Check for saved theme preference
+      if (localStorage.getItem("dark-mode") === "true") {
+        document.body.classList.add("dark-mode");
+        themeIcon.classList.remove("fa-moon");
+        themeIcon.classList.add("fa-sun");
+      }
+      
+      // Saved translations toggle
+      const savedToggle = document.getElementById("saved-toggle");
+      const savedContainer = document.getElementById("saved-container");
+      
+      savedToggle.addEventListener("click", function() {
+        savedContainer.classList.toggle("visible");
+      });
+      
+      // Character count
+      const sourceText = document.getElementById("source-text");
+      const charCount = document.querySelector(".character-count");
+      
+      sourceText.addEventListener("input", function() {
+        const count = sourceText.value.length;
+        charCount.textContent = `${count} / 5000`;
+        
+        if (count > 5000) {
+          charCount.style.color = "var(--danger)";
+          sourceText.value = sourceText.value.substring(0, 5000);
+        } else {
+          charCount.style.color = "var(--text-light)";
+        }
+      });
+      
+      // Example texts
+      const exampleTexts = {
+        "fr": "Bonjour, je m'appelle Marie. J'habite à Paris et j'aime beaucoup la cuisine française.",
+        "es": "Hola, me llamo Carlos. Vivo en Madrid y me encanta la cocina española.",
+        "de": "Hallo, ich heiße Hans. Ich wohne in Berlin und ich mag deutsche Küche sehr.",
+        "it": "Ciao, mi chiamo Marco. Abito a Roma e mi piace molto la cucina italiana."
+      };
+      
+      document.querySelectorAll(".example-text").forEach(example => {
+        example.addEventListener("click", function() {
+          const lang = this.getAttribute("data-lang");
+          sourceText.value = exampleTexts[lang];
+          document.getElementById("source-lang").value = lang;
+          // Update character count
+          const count = sourceText.value.length;
+          charCount.textContent = `${count} / 5000`;
+        });
+      });
+      
+      // Swap languages
+      document.getElementById("swap-languages").addEventListener("click", function() {
+        const sourceLang = document.getElementById("source-lang");
+        const targetLang = document.getElementById("target-lang");
+        const temp = sourceLang.value;
+        
+        sourceLang.value = targetLang.value;
+        targetLang.value = temp;
+      });
+      
+      // Clear text
+      document.getElementById("clear-text").addEventListener("click", function() {
+        sourceText.value = "";
+        charCount.textContent = "0 / 5000";
+      });
+      
+      // Process text
+      const processBtn = document.getElementById("process-btn");
+      const resultsContainer = document.getElementById("results-container");
+      const saveBtn = document.getElementById("save-btn");
+      
+      processBtn.addEventListener("click", async function () {
+        const text = sourceText.value.trim();
+        if (!text) {
+          alert("Please enter some text to process");
+          return;
+        }
+        
+        // Disable buttons during processing
+        processBtn.disabled = true;
+        saveBtn.disabled = true;
+        
+        // Show loading state
+        resultsContainer.innerHTML = `
+          <div class="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Processing your text...</div>
+            <div class="processing-steps">
+              <div class="processing-step" id="step-1"><i class="fas fa-circle-notch fa-spin"></i> Analyzing language structure</div>
+              <div class="processing-step" id="step-2"><i class="fas fa-circle-notch fa-spin"></i> Creating word-by-word translation</div>
+              <div class="processing-step" id="step-3"><i class="fas fa-circle-notch fa-spin"></i> Generating fluent translation</div>
+            </div>
+          </div>
+        `;
+        resultsContainer.classList.add("visible");
+        
+        // Simulate step progress
+        setTimeout(() => {
+          document.getElementById("step-1").classList.add("completed");
+          document.getElementById("step-1").innerHTML = '<i class="fas fa-check-circle"></i> Analyzing language structure';
+        }, 800);
+        
+        setTimeout(() => {
+          document.getElementById("step-2").classList.add("completed");
+          document.getElementById("step-2").innerHTML = '<i class="fas fa-check-circle"></i> Creating word-by-word translation';
+        }, 1600);
+        
+        setTimeout(() => {
+          document.getElementById("step-3").classList.add("completed");
+          document.getElementById("step-3").innerHTML = '<i class="fas fa-check-circle"></i> Generating fluent translation';
+        }, 2400);
+        try {
+          const response = await fetch("/process", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              text: text,
+              sourceLang: document.getElementById("source-lang").value,
+              targetLang: document.getElementById("target-lang").value,
+            }),
+          });
+          
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          let isFirstChunk = true;
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop();
+            
+            for (const line of lines) {
+              if (line.trim()) {
+                try {
+                  const sentence = JSON.parse(line);
+                  if (isFirstChunk) {
+                    resultsContainer.innerHTML = `
+                      <div class="output-header">
+                        <div class="output-title">Translation Results</div>
+                        <div class="output-actions">
+                          <button class="output-action" id="copy-all"><i class="fas fa-copy"></i> Copy</button>
+                          <button class="output-action" id="download-results"><i class="fas fa-download"></i> Download</button>
+                        </div>
+                      </div>
+                      <div id="sentences-container"></div>
+                    `;
+                    isFirstChunk = false;
+                  }
+                  
+                  displaySentence(sentence);
+                } catch (e) {
+                  console.error("Error parsing JSON:", e);
+                }
+              }
+            }
+          }
+          
+          if (buffer.trim()) {
+            try {
+              const sentence = JSON.parse(buffer);
+              if (isFirstChunk) {
+                resultsContainer.innerHTML = `
+                  <div class="output-header">
+                    <div class="output-title">Translation Results</div>
+                    <div class="output-actions">
+                      <button class="output-action" id="copy-all"><i class="fas fa-copy"></i> Copy</button>
+                      <button class="output-action" id="download-results"><i class="fas fa-download"></i> Download</button>
+                    </div>
+                  </div>
+                  <div id="sentences-container"></div>
+                `;
+                isFirstChunk = false;
+              }
+              
+              displaySentence(sentence);
+            } catch (e) {
+              console.error("Error parsing JSON:", e);
+            }
+          }
+          
+          // Set up copy and download functionality
+          setupResultActions();
+          
+        } catch (error) {
+          resultsContainer.innerHTML = `
+            <div class="error">
+              <i class="fas fa-exclamation-circle"></i>
+              <h3>Oops! Something went wrong</h3>
+              <p>${error.message || "Unable to process your text. Please try again."}</p>
+              <button class="retry-btn"><i class="fas fa-redo"></i> Try Again</button>
+            </div>
+          `;
+          
+          document.querySelector(".retry-btn").addEventListener("click", function() {
+            processBtn.click();
+          });
+        } finally {
+          // Re-enable buttons
+          processBtn.disabled = false;
+          saveBtn.disabled = false;
+        }
+      });
+      
+      let sentenceCounter = 0;
+      
+      function displaySentence(sentence) {
+        sentenceCounter++;
+        const sentencesContainer = document.getElementById("sentences-container");
+        
+        const html = `
+          <div class="sentence-block">
+            <div class="sentence-header">
+              <span class="sentence-number">Sentence ${sentenceCounter}</span>
+            </div>
+            <div class="original">${createInteractiveText(sentence)}</div>
+            <div class="word-mapping">${sentence.wordByWord}</div>
+            <div class="translation">${sentence.fluentTranslation}</div>
+            
+            <!-- Add grammar explanation container -->
+            <div class="grammar-explanation" id="grammar-${sentenceCounter}">
+              <div class="grammar-title">
+                <i class="fas fa-book-open"></i> Grammar Explanation
+              </div>
+              <div class="grammar-content">
+                <div class="grammar-loading">
+                  <i class="fas fa-spinner fa-spin"></i> Loading grammar explanation...
+                </div>
+              </div>
+            </div>
+            
+            <div class="sentence-actions">
+              <button class="sentence-action copy-sentence"><i class="fas fa-copy"></i> Copy</button>
+              <button class="sentence-action bookmark-sentence"><i class="far fa-bookmark"></i> Bookmark</button>
+            </div>
+            
+            <!-- Add grammar button above speak button -->
+            <button class="grammar-btn" data-sentence="${sentenceCounter}" title="Show grammar explanation">
+              <i class="fas fa-graduation-cap"></i>
+            </button>
+            
+            <button class="speak-btn" data-text="${sentence.original}">
+              <i class="fa-solid fa-headphones"></i>
+            </button>
+          </div>
+        `;
+        
+        sentencesContainer.innerHTML += html;
+        setupSentenceActions(sentencesContainer.lastElementChild, sentence);
+      }
+      
+      function createInteractiveText(sentence) {
+        const words = sentence.original.split(/(\s+)/);
+        let result = "";
+        
+        words.forEach((word) => {
+          if (word.trim() === "") {
+            result += word;
+            return;
+          }
+          
+          const cleanWord = word.replace(/[.,!?;:"'()]/g, "").toLowerCase();
+          const translation = sentence.wordTranslations[cleanWord];
+          
+          if (translation) {
+            result += `<span class="word">${word}<span class="tooltip">${translation}</span></span>`;
+          } else {
+            result += word;
+          }
+        });
+        
+        return result;
+      }
+      
+      function setupSentenceActions(sentenceBlock, sentenceData) {
+        // Copy button
+        sentenceBlock.querySelector(".copy-sentence").addEventListener("click", function() {
+          const text = `Original: ${sentenceData.original}\nWord-by-word: ${sentenceData.wordByWord}\nTranslation: ${sentenceData.fluentTranslation}`;
+          navigator.clipboard.writeText(text)
+            .then(() => {
+              this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+              setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-copy"></i> Copy';
+              }, 2000);
+            })
+            .catch(err => {
+              console.error('Could not copy text: ', err);
+            });
+        });
+        
+        // Bookmark button
+        sentenceBlock.querySelector(".bookmark-sentence").addEventListener("click", function() {
+          const bookmarkIcon = this.querySelector("i");
+          
+          if (bookmarkIcon.classList.contains("far")) {
+            bookmarkIcon.classList.remove("far");
+            bookmarkIcon.classList.add("fas");
+            this.innerHTML = '<i class="fas fa-bookmark"></i> Bookmarked';
+          } else {
+            bookmarkIcon.classList.remove("fas");
+            bookmarkIcon.classList.add("far");
+            this.innerHTML = '<i class="far fa-bookmark"></i> Bookmark';
+          }
+        });
+        
+        // Speak button
+        sentenceBlock.querySelector(".speak-btn").addEventListener("click", function() {
+          const text = this.getAttribute("data-text");
+          speakText(text);
+        });
+        
+        // Grammar button functionality
+        sentenceBlock.querySelector(".grammar-btn").addEventListener("click", function() {
+          const sentenceId = this.getAttribute("data-sentence");
+          const grammarContainer = document.getElementById(`grammar-${sentenceId}`);
+          
+          // Toggle visibility
+          grammarContainer.classList.toggle("visible");
+          
+          // If this is the first time showing grammar, fetch the explanation
+          if (grammarContainer.querySelector(".grammar-loading")) {
+            fetchGrammarExplanation(sentenceData.original, grammarContainer);
+          }
+        });
+      }
+      
+      // Add function to fetch grammar explanations
+      async function fetchGrammarExplanation(sentence, container) {
+        try {
+          const sourceLang = document.getElementById("source-lang").value;
+          const targetLang = document.getElementById("target-lang").value;
+          
+          const response = await fetch("/grammar-explanation", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              sentence: sentence,
+              sourceLang: sourceLang,
+              targetLang: targetLang,
+            }),
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          // Check for server-side error message
+          if (data.error) {
+              container.querySelector(".grammar-content").innerHTML = `
+                <div class="error">
+                  <p>${data.error}</p>
+                </div>
+              `;
+          } else {
+              // Create HTML for grammar explanation
+              let explanationHTML = '';
+              data.points.forEach(point => {
+                explanationHTML += `<div class="grammar-point">${formatGrammarPoint(point)}</div>`;
+              });
+
+              container.querySelector(".grammar-content").innerHTML = explanationHTML;
+          }
+
+        } catch (error) {
+          container.querySelector(".grammar-content").innerHTML = `
+            <div class="error">
+              <p>Sorry, couldn't load the grammar explanation. Please try again.</p>
+            </div>
+          `;
+        }
+      }
+
+      // Format grammar points and highlight key elements
+      function formatGrammarPoint(point) {
+        // Highlight grammar terms
+        return point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
+      }
+
+      function setupResultActions() {
+        // Copy all results
+        document.getElementById("copy-all").addEventListener("click", function() {
+          const blocks = document.querySelectorAll(".sentence-block");
+          let text = "";
+          
+          blocks.forEach((block, index) => {
+            const original = block.querySelector(".original").textContent;
+            const wordMapping = block.querySelector(".word-mapping").textContent;
+            const translation = block.querySelector(".translation").textContent;
+            
+            text += `Sentence ${index + 1}:\n`;
+            text += `Original: ${original}\n`;
+            text += `Word-by-word: ${wordMapping}\n`;
+            text += `Translation: ${translation}\n\n`;
+          });
+          
+          navigator.clipboard.writeText(text)
+            .then(() => {
+              this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+              setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-copy"></i> Copy';
+              }, 2000);
+            })
+            .catch(err => {
+              console.error('Could not copy text: ', err);
+            });
+        });
+        
+        // Download results
+        document.getElementById("download-results").addEventListener("click", function() {
+          const blocks = document.querySelectorAll(".sentence-block");
+          let text = "LinguaLens Translation Results\n\n";
+          
+          blocks.forEach((block, index) => {
+            const original = block.querySelector(".original").textContent;
+            const wordMapping = block.querySelector(".word-mapping").textContent;
+            const translation = block.querySelector(".translation").textContent;
+            
+            text += `Sentence ${index + 1}:\n`;
+            text += `Original: ${original}\n`;
+            text += `Word-by-word: ${wordMapping}\n`;
+            text += `Translation: ${translation}\n\n`;
+          });
+          
+          const blob = new Blob([text], { type: "text/plain" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "linguaLens_translation.txt";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      }
+      
+      // Save button functionality
+      saveBtn.addEventListener("click", function() {
+        const resultsVisible = resultsContainer.classList.contains("visible");
+        
+        if (!resultsVisible) {
+          alert("Process some text first to save the translation!");
+          return;
+        }
+        
+        const sourceLang = document.getElementById("source-lang").value;
+        const targetLang = document.getElementById("target-lang").value;
+        const text = sourceText.value.trim();
+        const date = new Date().toLocaleDateString();
+        
+        // Get language display names
+        const sourceLangName = document.querySelector(`#source-lang option[value="${sourceLang}"]`).textContent;
+        const targetLangName = document.querySelector(`#target-lang option[value="${targetLang}"]`).textContent;
+        
+        // Save to local storage
+        let savedTranslations = JSON.parse(localStorage.getItem("savedTranslations") || "[]");
+        savedTranslations.push({
+          sourceLang: sourceLang,
+          targetLang: targetLang,
+          sourceLangName: sourceLangName,
+          targetLangName: targetLangName,
+          text: text,
+          date: date,
+          sentences: Array.from(document.querySelectorAll(".sentence-block")).map(block => {
+            return {
+              original: block.querySelector(".original").textContent,
+              wordByWord: block.querySelector(".word-mapping").textContent,
+              fluentTranslation: block.querySelector(".translation").textContent
+            };
+          })
+        });
+        
+        localStorage.setItem("savedTranslations", JSON.stringify(savedTranslations));
+        
+        // Update saved list and show it
+        updateSavedList();
+        savedContainer.classList.add("visible");
+        
+        // Show success message
+        alert("Translation saved successfully!");
+      });
+      
+      function updateSavedList() {
+        const savedList = document.getElementById("saved-list");
+        const savedTranslations = JSON.parse(localStorage.getItem("savedTranslations") || "[]");
+        
+        if (savedTranslations.length === 0) {
+          savedList.innerHTML = `
+            <div class="no-saved">
+              <i class="fas fa-folder-open"></i>
+              <p>No saved translations yet</p>
+            </div>
+          `;
+          return;
+        }
+        
+        savedList.innerHTML = "";
+        
+        savedTranslations.forEach((item, index) => {
+          const savedItem = document.createElement("div");
+          savedItem.classList.add("saved-item");
+          
+          savedItem.innerHTML = `
+            <div class="saved-item-header">
+              <div class="saved-item-lang">${item.sourceLangName} → ${item.targetLangName}</div>
+              <div class="saved-item-date">${item.date}</div>
+            </div>
+            <div class="saved-item-text">${item.text.substring(0, 50)}${item.text.length > 50 ? "..." : ""}</div>
+          `;
+          
+          savedItem.addEventListener("click", function() {
+            // Load this saved translation
+            document.getElementById("source-lang").value = item.sourceLang;
+            document.getElementById("target-lang").value = item.targetLang;
+            sourceText.value = item.text;
+            charCount.textContent = `${item.text.length} / 5000`;
+            
+            // Display the saved sentences
+            sentenceCounter = 0;
+            resultsContainer.innerHTML = `
+              <div class="output-header">
+                <div class="output-title">Saved Translation</div>
+                <div class="output-actions">
+                  <button class="output-action" id="copy-all"><i class="fas fa-copy"></i> Copy</button>
+                  <button class="output-action" id="download-results"><i class="fas fa-download"></i> Download</button>
+                  <button class="output-action" id="delete-saved"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+              </div>
+              <div id="sentences-container"></div>
+            `;
+            
+            item.sentences.forEach(sentence => {
+              sentenceCounter++;
+              const sentencesContainer = document.getElementById("sentences-container");
+              
+              const html = `
+                <div class="sentence-block">
+                  <div class="sentence-header">
+                    <span class="sentence-number">Sentence ${sentenceCounter}</span>
+                  </div>
+                  <div class="original">${sentence.original}</div>
+                  <div class="word-mapping">${sentence.wordByWord}</div>
+                  <div class="translation">${sentence.fluentTranslation}</div>
+                  <div class="sentence-actions">
+                    <button class="sentence-action copy-sentence"><i class="fas fa-copy"></i> Copy</button>
+                  </div>
+                </div>
+              `;
+              
+              sentencesContainer.innerHTML += html;
+            });
+            
+            resultsContainer.classList.add("visible");
+            
+            // Setup result actions
+            setupResultActions();
+            
+            // Setup delete saved translation button
+            document.getElementById("delete-saved").addEventListener("click", function() {
+              if (confirm("Are you sure you want to delete this saved translation?")) {
+                savedTranslations.splice(index, 1);
+                localStorage.setItem("savedTranslations", JSON.stringify(savedTranslations));
+                updateSavedList();
+                alert("Translation deleted!");
+              }
+            });
+            
+            // Hide saved container
+            savedContainer.classList.remove("visible");
+          });
+          
+          savedList.appendChild(savedItem);
+        });
+      }
+      
+      // Initialize saved list
+      updateSavedList();
+      
+      // Speech synthesis
+      function speakText(text) {
+        if ("speechSynthesis" in window) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          const langValue = document.getElementById("source-lang").value;
+          utterance.lang = langValue;
+          
+          // Find matching voice
+          const voices = window.speechSynthesis.getVoices();
+          const matchingVoice = voices.find(voice => voice.lang.toLowerCase().startsWith(langValue));
+          
+          if (matchingVoice) {
+            utterance.voice = matchingVoice;
+          }
+          
+          window.speechSynthesis.speak(utterance);
+        } else {
+          alert("Sorry, your browser does not support speech synthesis.");
+        }
+      }
+      
+      // Ensure voices are loaded
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = function() {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    });
+  </script>
+</body>
+</html>
