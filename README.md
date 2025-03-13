@@ -27,7 +27,8 @@ Developed by Vera F. Birkenbihl, the Birkenbihl Method focuses on "decoding" for
 
 ## Demo
 
-![LinguaLens Demo](https://via.placeholder.com/600x300) <!-- Replace with actual demo image/GIF URL -->
+![LinguaLens Demo](![image](https://github.com/user-attachments/assets/3723b3b6-c4a8-4ff8-a078-9105f5239f4d)
+) <!-- Replace with actual demo image/GIF URL -->
 
 Try it live: [LinguaLens Demo](#) <!-- Replace with actual hosted URL if available -->
 
