@@ -58,6 +58,7 @@ Developed by Vera F. Birkenbihl, the Birkenbihl Method focuses on "decoding" for
      ```
 
 5. **Run the Application**
+   
    ```bash
    python app.py
    ```
