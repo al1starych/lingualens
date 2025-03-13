@@ -61,7 +61,7 @@ Developed by Vera F. Birkenbihl, the Birkenbihl Method focuses on "decoding" for
    ```bash
    python app.py
    ```
-   - Open your browser and go to `http://localhost:5000`.
+- Open your browser and go to `http://localhost:5000`.
 
 ## Usage
 
