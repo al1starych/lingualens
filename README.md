@@ -49,11 +49,6 @@ Developed by Vera F. Birkenbihl, the Birkenbihl Method focuses on "decoding" for
    ```bash
    pip install -r requirements.txt
    ```
-   *Note:* If `requirements.txt` isn’t present, create it with:
-   ```
-   flask
-   google-generativeai
-   ```
 
 3. **Configure the API Key**
 - Open `app.py` and replace the placeholder API key:
