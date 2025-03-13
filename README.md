@@ -28,7 +28,6 @@ Developed by Vera F. Birkenbihl, the Birkenbihl Method focuses on "decoding" for
 ## Demo
 
 ![LinguaLens Demo](https://i.imgur.com/8BIxjQt.png)
-![LinguaLens Demo 2](https://imgur.com/0eb6e0d8-d613-48a9-9ae9-65c094540847)
 
 ## Installation
 
