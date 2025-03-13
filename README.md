@@ -130,33 +130,16 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Vera F. Birkenbihl**: For her groundbreaking language learning methodology.
 - **Google Gemini API**: Powers translation and grammar analysis.
 - **Open Source Community**: For tools like Flask and Font Awesome.
+- **Grok 3, Claude Sonnet 3.7, ChatGPT**: For help in development. 
 
 ## Contact
 
 Questions or ideas? Open an issue or reach out:
-- Email: [email@example.com](mailto:email@example.com)
-- Twitter: [@yourtwitter](#) <!-- Replace with actual handle -->
-- GitHub: [yourusername](#) <!-- Replace with actual profile -->
+- Email: [lstrmarti@gmail.com](mailto:email@example.com)
+- GitHub: [al1starych](#) <!-- Replace with actual profile -->
 
 ---
 
 Happy learning with LinguaLens! 🌍📚
 
 ---
-
-### Key Markdown Adjustments
-1. **Headings**: Used `#`, `##`, etc., for proper hierarchy.
-2. **Images**: Replaced HTML `<img>` with Markdown `![alt](url)` syntax.
-3. **Links**: Used `[text](url)` for clickable links.
-4. **Code Blocks**: Wrapped code in triple backticks (```) with language specifiers (e.g., ```bash).
-5. **Lists**: Used `-` for unordered lists and numbers for ordered lists.
-6. **Bold/Italics**: Applied `**` and `*` for emphasis instead of HTML tags.
-7. **Badges**: Kept as-is since GitHub renders them correctly from URLs.
-
-### How to Use
-1. Copy this text into a file named `README.md` in your project root.
-2. Replace placeholders (e.g., `yourusername`, `YOUR_API_KEY_HERE`, image URLs) with actual values.
-3. Add a `LICENSE` file if not already present (e.g., MIT License text).
-4. Commit and push to your GitHub repository.
-
-This should now render beautifully on GitHub! Let me know if you need further refinements.
