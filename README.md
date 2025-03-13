@@ -57,7 +57,7 @@ Developed by Vera F. Birkenbihl, the Birkenbihl Method focuses on "decoding" for
      genai.configure(api_key="YOUR_API_KEY_HERE")
      ```
 
-5. **Run the Application**
+4. **Run the Application**
    
    ```bash
    python app.py
