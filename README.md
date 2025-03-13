@@ -1,1 +1,1 @@
-# lingualens
+# LinguaLens
