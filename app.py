@@ -8,7 +8,7 @@ import time
 app = Flask(__name__)
 
 # Configure the Gemini API
-genai.configure(api_key="AIzaSyAwaGJum3kiEysiE0W9qagzMvATW43dWn0")  # Replace with your actual API key
+genai.configure(api_key="place your api key here")  # Replace with your actual API key
 model = genai.GenerativeModel("gemini-2.0-flash")
 
 @app.route('/')
