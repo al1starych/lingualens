@@ -189,7 +189,7 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.6%205.4-7.9%205.4-12.9%200-5-1.9-9.2-5.5-12.7z%22%2F%3E%3C%2Fsvg%3E");
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
       background-repeat: no-repeat;
       background-position: right 1rem top 50%;
       background-size: 0.65rem auto;
@@ -760,6 +760,15 @@
       border-radius: 0.2rem;
       font-weight: 500;
     }
+
+    /* Romanization styles */
+    .romanization {
+      font-size: 1rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-style: italic;
+      line-height: 1.8;
+    }
     
     @keyframes spin {
       to {
@@ -858,7 +867,7 @@
       </div>
       <div class="info-content">
         <h3>About the Birkenbihl Method</h3>
-        <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making it easier to read in a foreign language while naturally internalizing grammar patterns.</p>
+        <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making language learning more effective and intuitive.</p>
       </div>
     </div>
     <div class="controls-container">
@@ -973,6 +982,9 @@
           <div class="example-text" data-lang="es">Simple Spanish example</div>
           <div class="example-text" data-lang="de">Simple German example</div>
           <div class="example-text" data-lang="it">Simple Italian example</div>
+          <div class="example-text" data-lang="zh">简单的中文例子</div>
+          <div class="example-text" data-lang="ja">簡単な日本語の例</div>
+          <div class="example-text" data-lang="ko">간단한 한국어 예시</div>
         </div>
         
         <div class="btn-container">
@@ -999,533 +1011,508 @@
         </div>
       </div>
     </div>
-    <footer>
-      <p>Made with ❤️ for language learners everywhere</p>
-      <p>The Birkenbihl method was developed by Vera F. Birkenbihl to make language learning more intuitive and effective</p>
-      <div class="social-links">
-        <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
-        <a href="#" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
-      </div>
-    </footer>
   </div>
+  <footer>
+    <p>LinguaLens - Learn languages effectively with the Birkenbihl method</p>
+    <p>© 2023 LinguaLens</p>
+  </footer>
+
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      // Theme toggle functionality
-      const themeToggle = document.getElementById("theme-toggle");
-      const themeIcon = themeToggle.querySelector("i");
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM elements
+      const themeToggle = document.getElementById('theme-toggle');
+      const savedToggle = document.getElementById('saved-toggle');
+      const sourceLang = document.getElementById('source-lang');
+      const targetLang = document.getElementById('target-lang');
+      const swapLangsBtn = document.getElementById('swap-languages');
+      const clearTextBtn = document.getElementById('clear-text');
+      const sourceText = document.getElementById('source-text');
+      const charCount = document.querySelector('.character-count');
+      const exampleTexts = document.querySelectorAll('.example-text');
+      const processBtn = document.getElementById('process-btn');
+      const saveBtn = document.getElementById('save-btn');
+      const resultsContainer = document.getElementById('results-container');
+      const savedContainer = document.getElementById('saved-container');
+      const savedList = document.getElementById('saved-list');
       
-      themeToggle.addEventListener("click", function() {
-        document.body.classList.toggle("dark-mode");
-        if (document.body.classList.contains("dark-mode")) {
-          themeIcon.classList.remove("fa-moon");
-          themeIcon.classList.add("fa-sun");
+      // Examples for different languages
+      const examples = {
+        'fr': 'Je voudrais un café, s\'il vous plaît. Merci beaucoup!',
+        'es': 'Me gustaría tomar un café, por favor. ¡Muchas gracias!',
+        'de': 'Ich hätte gerne einen Kaffee, bitte. Vielen Dank!',
+        'it': 'Vorrei un caffè, per favore. Grazie mille!',
+        'zh': '我想要一杯咖啡，谢谢。非常感谢！',
+        'ja': 'コーヒーをお願いします。どうもありがとうございます！',
+        'ko': '커피 한 잔 주세요. 정말 감사합니다!',
+        'ru': 'Я бы хотел кофе, пожалуйста. Большое спасибо!'
+      };
+      
+      // Theme toggle functionality
+      themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        
+        if (document.body.classList.contains('dark-mode')) {
+          themeToggle.querySelector('i').className = 'fas fa-sun';
         } else {
-          themeIcon.classList.remove("fa-sun");
-          themeIcon.classList.add("fa-moon");
+          themeToggle.querySelector('i').className = 'fas fa-moon';
         }
-        // Save theme preference
-        localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode"));
+        
+        // Save preference to localStorage
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
       });
       
-      // Check for saved theme preference
-      if (localStorage.getItem("dark-mode") === "true") {
-        document.body.classList.add("dark-mode");
-        themeIcon.classList.remove("fa-moon");
-        themeIcon.classList.add("fa-sun");
+      // Load theme preference
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        themeToggle.querySelector('i').className = 'fas fa-sun';
       }
       
       // Saved translations toggle
-      const savedToggle = document.getElementById("saved-toggle");
-      const savedContainer = document.getElementById("saved-container");
-      
-      savedToggle.addEventListener("click", function() {
-        savedContainer.classList.toggle("visible");
+      savedToggle.addEventListener('click', function() {
+        savedContainer.classList.toggle('visible');
+        loadSavedTranslations();
       });
       
-      // Character count
-      const sourceText = document.getElementById("source-text");
-      const charCount = document.querySelector(".character-count");
+      // Swap languages
+      swapLangsBtn.addEventListener('click', function() {
+        const sourceVal = sourceLang.value;
+        const targetVal = targetLang.value;
+        
+        if (targetVal !== 'en') { // Can only swap if target is not English
+          sourceLang.value = targetVal;
+          targetLang.value = sourceVal;
+        }
+      });
       
-      sourceText.addEventListener("input", function() {
+      // Clear text
+      clearTextBtn.addEventListener('click', function() {
+        sourceText.value = '';
+        updateCharCount();
+      });
+      
+      // Character count update
+      sourceText.addEventListener('input', updateCharCount);
+      
+      function updateCharCount() {
         const count = sourceText.value.length;
         charCount.textContent = `${count} / 5000`;
         
         if (count > 5000) {
-          charCount.style.color = "var(--danger)";
-          sourceText.value = sourceText.value.substring(0, 5000);
+          charCount.style.color = 'var(--danger)';
         } else {
-          charCount.style.color = "var(--text-light)";
+          charCount.style.color = 'var(--text-light)';
         }
-      });
+      }
       
-      // Example texts
-      const exampleTexts = {
-        "fr": "Bonjour, je m'appelle Marie. J'habite à Paris et j'aime beaucoup la cuisine française.",
-        "es": "Hola, me llamo Carlos. Vivo en Madrid y me encanta la cocina española.",
-        "de": "Hallo, ich heiße Hans. Ich wohne in Berlin und ich mag deutsche Küche sehr.",
-        "it": "Ciao, mi chiamo Marco. Abito a Roma e mi piace molto la cucina italiana."
-      };
-      
-      document.querySelectorAll(".example-text").forEach(example => {
-        example.addEventListener("click", function() {
-          const lang = this.getAttribute("data-lang");
-          sourceText.value = exampleTexts[lang];
-          document.getElementById("source-lang").value = lang;
-          // Update character count
-          const count = sourceText.value.length;
-          charCount.textContent = `${count} / 5000`;
+      // Example texts functionality
+      exampleTexts.forEach(example => {
+        example.addEventListener('click', function() {
+          const lang = this.dataset.lang;
+          if (examples[lang]) {
+            sourceLang.value = lang;
+            sourceText.value = examples[lang];
+            updateCharCount();
+          }
         });
       });
       
-      // Swap languages
-      document.getElementById("swap-languages").addEventListener("click", function() {
-        const sourceLang = document.getElementById("source-lang");
-        const targetLang = document.getElementById("target-lang");
-        const temp = sourceLang.value;
-        
-        sourceLang.value = targetLang.value;
-        targetLang.value = temp;
+      // Process button
+      processBtn.addEventListener('click', function() {
+        processText();
       });
       
-      // Clear text
-      document.getElementById("clear-text").addEventListener("click", function() {
-        sourceText.value = "";
-        charCount.textContent = "0 / 5000";
+      // Save translation
+      saveBtn.addEventListener('click', function() {
+        saveTranslation();
       });
       
-      // Process text
-      const processBtn = document.getElementById("process-btn");
-      const resultsContainer = document.getElementById("results-container");
-      const saveBtn = document.getElementById("save-btn");
-      
-      processBtn.addEventListener("click", async function () {
+      // Process text function
+      async function processText() {
         const text = sourceText.value.trim();
         if (!text) {
-          alert("Please enter some text to process");
+          showError('Please enter some text to process');
           return;
         }
         
-        // Disable buttons during processing
-        processBtn.disabled = true;
-        saveBtn.disabled = true;
+        if (text.length > 5000) {
+          showError('Text exceeds maximum length of 5000 characters');
+          return;
+        }
         
         // Show loading state
-        resultsContainer.innerHTML = `
-          <div class="loading">
-            <div class="spinner"></div>
-            <div class="loading-text">Processing your text...</div>
-            <div class="processing-steps">
-              <div class="processing-step" id="step-1"><i class="fas fa-circle-notch fa-spin"></i> Analyzing language structure</div>
-              <div class="processing-step" id="step-2"><i class="fas fa-circle-notch fa-spin"></i> Creating word-by-word translation</div>
-              <div class="processing-step" id="step-3"><i class="fas fa-circle-notch fa-spin"></i> Generating fluent translation</div>
-            </div>
-          </div>
-        `;
-        resultsContainer.classList.add("visible");
+        showLoading();
         
-        // Simulate step progress
-        setTimeout(() => {
-          document.getElementById("step-1").classList.add("completed");
-          document.getElementById("step-1").innerHTML = '<i class="fas fa-check-circle"></i> Analyzing language structure';
-        }, 800);
-        
-        setTimeout(() => {
-          document.getElementById("step-2").classList.add("completed");
-          document.getElementById("step-2").innerHTML = '<i class="fas fa-check-circle"></i> Creating word-by-word translation';
-        }, 1600);
-        
-        setTimeout(() => {
-          document.getElementById("step-3").classList.add("completed");
-          document.getElementById("step-3").innerHTML = '<i class="fas fa-check-circle"></i> Generating fluent translation';
-        }, 2400);
         try {
-          const response = await fetch("/process", {
-            method: "POST",
+          const response = await fetch('/process', {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               text: text,
-              sourceLang: document.getElementById("source-lang").value,
-              targetLang: document.getElementById("target-lang").value,
-            }),
+              sourceLang: sourceLang.value,
+              targetLang: targetLang.value
+            })
           });
           
           if (!response.ok) {
-            throw new Error("Network response was not ok");
+            throw new Error('Server error');
           }
-          let isFirstChunk = true;
+          
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
-          let buffer = "";
+          
+          resultsContainer.innerHTML = '';
+          resultsContainer.classList.add('visible');
+          
+          // Create output header
+          const outputHeader = document.createElement('div');
+          outputHeader.className = 'output-header';
+          
+          const outputTitle = document.createElement('div');
+          outputTitle.className = 'output-title';
+          outputTitle.textContent = 'Translation Results';
+          
+          const outputActions = document.createElement('div');
+          outputActions.className = 'output-actions';
+          
+          const copyAction = document.createElement('button');
+          copyAction.className = 'output-action';
+          copyAction.innerHTML = '<i class="fas fa-copy"></i> Copy';
+          copyAction.addEventListener('click', () => copyResults());
+          
+          const speakAllAction = document.createElement('button');
+          speakAllAction.className = 'output-action';
+          speakAllAction.innerHTML = '<i class="fas fa-volume-up"></i> Speak All';
+          speakAllAction.addEventListener('click', () => speakAllText());
+          
+          outputActions.appendChild(copyAction);
+          outputActions.appendChild(speakAllAction);
+          
+          outputHeader.appendChild(outputTitle);
+          outputHeader.appendChild(outputActions);
+          
+          resultsContainer.appendChild(outputHeader);
+          
+          let index = 0;
+          let sentences = [];
           
           while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+            const { value, done } = await reader.read();
             
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n");
-            buffer = lines.pop();
+            if (done) {
+              break;
+            }
+            
+            const chunk = decoder.decode(value);
+            const lines = chunk.split('\n');
             
             for (const line of lines) {
               if (line.trim()) {
                 try {
-                  const sentence = JSON.parse(line);
-                  if (isFirstChunk) {
-                    resultsContainer.innerHTML = `
-                      <div class="output-header">
-                        <div class="output-title">Translation Results</div>
-                        <div class="output-actions">
-                          <button class="output-action" id="copy-all"><i class="fas fa-copy"></i> Copy</button>
-                          <button class="output-action" id="download-results"><i class="fas fa-download"></i> Download</button>
-                        </div>
-                      </div>
-                      <div id="sentences-container"></div>
-                    `;
-                    isFirstChunk = false;
-                  }
+                  const sentenceData = JSON.parse(line);
+                  sentences.push(sentenceData);
                   
-                  displaySentence(sentence);
+                  const sentenceBlock = createSentenceBlock(sentenceData, index);
+                  resultsContainer.appendChild(sentenceBlock);
+                  index++;
+                  
+                  // Update the loading state to show progress
+                  updateLoadingProgress(`Processed ${index} sentences...`);
                 } catch (e) {
-                  console.error("Error parsing JSON:", e);
+                  console.error('Error parsing sentence data:', e);
                 }
               }
             }
           }
           
-          if (buffer.trim()) {
-            try {
-              const sentence = JSON.parse(buffer);
-              if (isFirstChunk) {
-                resultsContainer.innerHTML = `
-                  <div class="output-header">
-                    <div class="output-title">Translation Results</div>
-                    <div class="output-actions">
-                      <button class="output-action" id="copy-all"><i class="fas fa-copy"></i> Copy</button>
-                      <button class="output-action" id="download-results"><i class="fas fa-download"></i> Download</button>
-                    </div>
-                  </div>
-                  <div id="sentences-container"></div>
-                `;
-                isFirstChunk = false;
-              }
-              
-              displaySentence(sentence);
-            } catch (e) {
-              console.error("Error parsing JSON:", e);
-            }
-          }
-          
-          // Set up copy and download functionality
-          setupResultActions();
+          // Hide loading when complete
+          hideLoading();
           
         } catch (error) {
-          resultsContainer.innerHTML = `
-            <div class="error">
-              <i class="fas fa-exclamation-circle"></i>
-              <h3>Oops! Something went wrong</h3>
-              <p>${error.message || "Unable to process your text. Please try again."}</p>
-              <button class="retry-btn"><i class="fas fa-redo"></i> Try Again</button>
-            </div>
-          `;
-          
-          document.querySelector(".retry-btn").addEventListener("click", function() {
-            processBtn.click();
-          });
-        } finally {
-          // Re-enable buttons
-          processBtn.disabled = false;
-          saveBtn.disabled = false;
+          console.error('Error processing text:', error);
+          showError('An error occurred while processing your text. Please try again.');
+          hideLoading();
         }
-      });
-      
-      let sentenceCounter = 0;
-      
-      function displaySentence(sentence) {
-        sentenceCounter++;
-        const sentencesContainer = document.getElementById("sentences-container");
-        
-        const html = `
-          <div class="sentence-block">
-            <div class="sentence-header">
-              <span class="sentence-number">Sentence ${sentenceCounter}</span>
-            </div>
-            <div class="original">${createInteractiveText(sentence)}</div>
-            <div class="word-mapping">${sentence.wordByWord}</div>
-            <div class="translation">${sentence.fluentTranslation}</div>
-            
-            <!-- Add grammar explanation container -->
-            <div class="grammar-explanation" id="grammar-${sentenceCounter}">
-              <div class="grammar-title">
-                <i class="fas fa-book-open"></i> Grammar Explanation
-              </div>
-              <div class="grammar-content">
-                <div class="grammar-loading">
-                  <i class="fas fa-spinner fa-spin"></i> Loading grammar explanation...
-                </div>
-              </div>
-            </div>
-            
-            <div class="sentence-actions">
-              <button class="sentence-action copy-sentence"><i class="fas fa-copy"></i> Copy</button>
-              <button class="sentence-action bookmark-sentence"><i class="far fa-bookmark"></i> Bookmark</button>
-            </div>
-            
-            <!-- Add grammar button above speak button -->
-            <button class="grammar-btn" data-sentence="${sentenceCounter}" title="Show grammar explanation">
-              <i class="fas fa-graduation-cap"></i>
-            </button>
-            
-            <button class="speak-btn" data-text="${sentence.original}">
-              <i class="fa-solid fa-headphones"></i>
-            </button>
-          </div>
-        `;
-        
-        sentencesContainer.innerHTML += html;
-        setupSentenceActions(sentencesContainer.lastElementChild, sentence);
       }
       
-      function createInteractiveText(sentence) {
-        const words = sentence.original.split(/(\s+)/);
-        let result = "";
+      // Function to create a sentence block with romanization support
+      function createSentenceBlock(data, index) {
+        const sentenceBlock = document.createElement('div');
+        sentenceBlock.className = 'sentence-block';
         
-        words.forEach((word) => {
-          if (word.trim() === "") {
-            result += word;
-            return;
+        // Create sentence header
+        const sentenceHeader = document.createElement('div');
+        sentenceHeader.className = 'sentence-header';
+        
+        const sentenceNumber = document.createElement('div');
+        sentenceNumber.className = 'sentence-number';
+        sentenceNumber.textContent = `Sentence ${index + 1}`;
+        
+        sentenceHeader.appendChild(sentenceNumber);
+        sentenceBlock.appendChild(sentenceHeader);
+        
+        // Original text
+        const original = document.createElement('div');
+        original.className = 'original';
+        original.textContent = data.original;
+        sentenceBlock.appendChild(original);
+        
+        // Romanization (if available) - NEW FEATURE
+        if (data.romanization) {
+          const romanization = document.createElement('div');
+          romanization.className = 'romanization';
+          romanization.textContent = data.romanization;
+          sentenceBlock.appendChild(romanization);
+        }
+        
+        // Word by word translation
+        const wordMapping = document.createElement('div');
+        wordMapping.className = 'word-mapping';
+        wordMapping.textContent = data.wordByWord;
+        sentenceBlock.appendChild(wordMapping);
+        
+        // Fluent translation
+        const translation = document.createElement('div');
+        translation.className = 'translation';
+        translation.textContent = data.fluentTranslation;
+        sentenceBlock.appendChild(translation);
+        
+        // Interactive words with translations
+        const words = document.createElement('div');
+        words.className = 'words-container';
+        
+        // Create word elements with tooltips
+        const originalWords = data.original.split(/\s+/);
+        for (const word of originalWords) {
+          if (word.trim()) {
+            const wordElement = document.createElement('span');
+            wordElement.className = 'word';
+            wordElement.textContent = word;
+            
+            if (data.wordTranslations[word]) {
+              const tooltip = document.createElement('span');
+              tooltip.className = 'tooltip';
+              tooltip.textContent = data.wordTranslations[word];
+              wordElement.appendChild(tooltip);
+            }
+            
+            words.appendChild(wordElement);
+            words.appendChild(document.createTextNode(' '));
           }
+        }
+        
+        sentenceBlock.appendChild(words);
+        
+        // Add grammar explanation button
+        const grammarBtn = document.createElement('button');
+        grammarBtn.className = 'grammar-btn';
+        grammarBtn.innerHTML = '<i class="fas fa-book"></i>';
+        grammarBtn.title = 'Show grammar explanation';
+        grammarBtn.addEventListener('click', () => {
+          // Get grammar explanation
+          const grammarContainer = sentenceBlock.querySelector('.grammar-explanation') || 
+                                  createGrammarContainer(sentenceBlock);
           
-          const cleanWord = word.replace(/[.,!?;:"'()]/g, "").toLowerCase();
-          const translation = sentence.wordTranslations[cleanWord];
-          
-          if (translation) {
-            result += `<span class="word">${word}<span class="tooltip">${translation}</span></span>`;
+          if (grammarContainer.classList.contains('visible')) {
+            grammarContainer.classList.remove('visible');
           } else {
-            result += word;
+            getGrammarExplanation(data.original, sourceLang.value, targetLang.value, grammarContainer);
+            grammarContainer.classList.add('visible');
           }
         });
         
-        return result;
+        // Add text-to-speech button
+        const speakBtn = document.createElement('button');
+        speakBtn.className = 'speak-btn';
+        speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        speakBtn.title = 'Listen to pronunciation';
+        speakBtn.addEventListener('click', () => {
+          speakText(data.original, sourceLang.value);
+        });
+        
+        sentenceBlock.appendChild(grammarBtn);
+        sentenceBlock.appendChild(speakBtn);
+        
+        return sentenceBlock;
       }
       
-      function setupSentenceActions(sentenceBlock, sentenceData) {
-        // Copy button
-        sentenceBlock.querySelector(".copy-sentence").addEventListener("click", function() {
-          const text = `Original: ${sentenceData.original}\nWord-by-word: ${sentenceData.wordByWord}\nTranslation: ${sentenceData.fluentTranslation}`;
-          navigator.clipboard.writeText(text)
-            .then(() => {
-              this.innerHTML = '<i class="fas fa-check"></i> Copied!';
-              setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-copy"></i> Copy';
-              }, 2000);
-            })
-            .catch(err => {
-              console.error('Could not copy text: ', err);
-            });
-        });
+      // Function to create grammar explanation container
+      function createGrammarContainer(sentenceBlock) {
+        const grammarContainer = document.createElement('div');
+        grammarContainer.className = 'grammar-explanation';
         
-        // Bookmark button
-        sentenceBlock.querySelector(".bookmark-sentence").addEventListener("click", function() {
-          const bookmarkIcon = this.querySelector("i");
-          
-          if (bookmarkIcon.classList.contains("far")) {
-            bookmarkIcon.classList.remove("far");
-            bookmarkIcon.classList.add("fas");
-            this.innerHTML = '<i class="fas fa-bookmark"></i> Bookmarked';
-          } else {
-            bookmarkIcon.classList.remove("fas");
-            bookmarkIcon.classList.add("far");
-            this.innerHTML = '<i class="far fa-bookmark"></i> Bookmark';
-          }
-        });
+        const grammarTitle = document.createElement('div');
+        grammarTitle.className = 'grammar-title';
+        grammarTitle.innerHTML = '<i class="fas fa-book"></i> Grammar Explanation';
         
-        // Speak button
-        sentenceBlock.querySelector(".speak-btn").addEventListener("click", function() {
-          const text = this.getAttribute("data-text");
-          speakText(text);
-        });
+        const grammarLoading = document.createElement('div');
+        grammarLoading.className = 'grammar-loading';
+        grammarLoading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading grammar explanation...';
         
-        // Grammar button functionality
-        sentenceBlock.querySelector(".grammar-btn").addEventListener("click", function() {
-          const sentenceId = this.getAttribute("data-sentence");
-          const grammarContainer = document.getElementById(`grammar-${sentenceId}`);
-          
-          // Toggle visibility
-          grammarContainer.classList.toggle("visible");
-          
-          // If this is the first time showing grammar, fetch the explanation
-          if (grammarContainer.querySelector(".grammar-loading")) {
-            fetchGrammarExplanation(sentenceData.original, grammarContainer);
-          }
-        });
+        grammarContainer.appendChild(grammarTitle);
+        grammarContainer.appendChild(grammarLoading);
+        sentenceBlock.appendChild(grammarContainer);
+        
+        return grammarContainer;
       }
       
-      // Add function to fetch grammar explanations
-      async function fetchGrammarExplanation(sentence, container) {
+      // Function to get grammar explanation
+      async function getGrammarExplanation(sentence, sourceLang, targetLang, container) {
+        const loadingElement = container.querySelector('.grammar-loading');
+        loadingElement.style.display = 'flex';
+        
         try {
-          const sourceLang = document.getElementById("source-lang").value;
-          const targetLang = document.getElementById("target-lang").value;
-          
-          const response = await fetch("/grammar-explanation", {
-            method: "POST",
+          const response = await fetch('/grammar-explanation', {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               sentence: sentence,
               sourceLang: sourceLang,
-              targetLang: targetLang,
-            }),
+              targetLang: targetLang
+            })
           });
           
           if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
+            throw new Error('Server error');
           }
-
+          
           const data = await response.json();
-
-          // Check for server-side error message
-          if (data.error) {
-              container.querySelector(".grammar-content").innerHTML = `
-                <div class="error">
-                  <p>${data.error}</p>
-                </div>
-              `;
+          
+          // Remove loading element
+          loadingElement.style.display = 'none';
+          
+          // Remove any existing points
+          const existingPoints = container.querySelectorAll('.grammar-point');
+          existingPoints.forEach(point => point.remove());
+          
+          // Add grammar points
+          if (data.points && data.points.length > 0) {
+            data.points.forEach(point => {
+              const pointElement = document.createElement('div');
+              pointElement.className = 'grammar-point';
+              
+              // Replace **text** with highlighted span
+              const highlightedText = point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
+              pointElement.innerHTML = highlightedText;
+              
+              container.appendChild(pointElement);
+            });
           } else {
-              // Create HTML for grammar explanation
-              let explanationHTML = '';
-              data.points.forEach(point => {
-                explanationHTML += `<div class="grammar-point">${formatGrammarPoint(point)}</div>`;
-              });
-
-              container.querySelector(".grammar-content").innerHTML = explanationHTML;
+            const noPoints = document.createElement('div');
+            noPoints.className = 'grammar-point';
+            noPoints.textContent = 'No grammar points available for this sentence.';
+            container.appendChild(noPoints);
           }
-
+          
         } catch (error) {
-          container.querySelector(".grammar-content").innerHTML = `
-            <div class="error">
-              <p>Sorry, couldn't load the grammar explanation. Please try again.</p>
-            </div>
-          `;
+          console.error('Error fetching grammar explanation:', error);
+          loadingElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed to load grammar explanation';
         }
       }
-
-      // Format grammar points and highlight key elements
-      function formatGrammarPoint(point) {
-        // Highlight grammar terms
-        return point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
-      }
-
-      function setupResultActions() {
-        // Copy all results
-        document.getElementById("copy-all").addEventListener("click", function() {
-          const blocks = document.querySelectorAll(".sentence-block");
-          let text = "";
+      
+      // Function to speak text using Web Speech API
+      function speakText(text, language) {
+        if ('speechSynthesis' in window) {
+          // Map language codes to speech synthesis voices
+          const langMap = {
+            'en': 'en-US',
+            'fr': 'fr-FR',
+            'es': 'es-ES',
+            'de': 'de-DE',
+            'it': 'it-IT',
+            'ja': 'ja-JP',
+            'ru': 'ru-RU',
+            'zh': 'zh-CN',
+            'ko': 'ko-KR'
+          };
           
-          blocks.forEach((block, index) => {
-            const original = block.querySelector(".original").textContent;
-            const wordMapping = block.querySelector(".word-mapping").textContent;
-            const translation = block.querySelector(".translation").textContent;
-            
-            text += `Sentence ${index + 1}:\n`;
-            text += `Original: ${original}\n`;
-            text += `Word-by-word: ${wordMapping}\n`;
-            text += `Translation: ${translation}\n\n`;
-          });
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = langMap[language] || language;
           
-          navigator.clipboard.writeText(text)
-            .then(() => {
-              this.innerHTML = '<i class="fas fa-check"></i> Copied!';
-              setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-copy"></i> Copy';
-              }, 2000);
-            })
-            .catch(err => {
-              console.error('Could not copy text: ', err);
-            });
-        });
-        
-        // Download results
-        document.getElementById("download-results").addEventListener("click", function() {
-          const blocks = document.querySelectorAll(".sentence-block");
-          let text = "LinguaLens Translation Results\n\n";
-          
-          blocks.forEach((block, index) => {
-            const original = block.querySelector(".original").textContent;
-            const wordMapping = block.querySelector(".word-mapping").textContent;
-            const translation = block.querySelector(".translation").textContent;
-            
-            text += `Sentence ${index + 1}:\n`;
-            text += `Original: ${original}\n`;
-            text += `Word-by-word: ${wordMapping}\n`;
-            text += `Translation: ${translation}\n\n`;
-          });
-          
-          const blob = new Blob([text], { type: "text/plain" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "linguaLens_translation.txt";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        });
+          speechSynthesis.speak(utterance);
+        } else {
+          alert('Text-to-speech is not supported in your browser.');
+        }
       }
       
-      // Save button functionality
-      saveBtn.addEventListener("click", function() {
-        const resultsVisible = resultsContainer.classList.contains("visible");
+      // Function to speak all text in results
+      function speakAllText() {
+        const originals = resultsContainer.querySelectorAll('.original');
         
-        if (!resultsVisible) {
-          alert("Process some text first to save the translation!");
+        if (originals.length === 0) {
           return;
         }
         
-        const sourceLang = document.getElementById("source-lang").value;
-        const targetLang = document.getElementById("target-lang").value;
+        // Cancel any current speech
+        if ('speechSynthesis' in window) {
+          speechSynthesis.cancel();
+        }
+        
+        // Speak each sentence with a delay
+        originals.forEach((original, index) => {
+          setTimeout(() => {
+            speakText(original.textContent, sourceLang.value);
+          }, index * 3000); // 3 second delay between sentences
+        });
+      }
+      
+      // Function to copy all results
+      function copyResults() {
+        const originals = resultsContainer.querySelectorAll('.original');
+        const translations = resultsContainer.querySelectorAll('.translation');
+        
+        if (originals.length === 0) {
+          return;
+        }
+        
+        let copyText = '';
+        for (let i = 0; i < originals.length; i++) {
+          copyText += originals[i].textContent + '\n';
+          copyText += translations[i].textContent + '\n\n';
+        }
+        
+        navigator.clipboard.writeText(copyText).then(() => {
+          alert('Translation copied to clipboard!');
+        });
+      }
+      
+      // Function to save translation
+      function saveTranslation() {
         const text = sourceText.value.trim();
-        const date = new Date().toLocaleDateString();
+        if (!text) {
+          return;
+        }
         
-        // Get language display names
-        const sourceLangName = document.querySelector(`#source-lang option[value="${sourceLang}"]`).textContent;
-        const targetLangName = document.querySelector(`#target-lang option[value="${targetLang}"]`).textContent;
+        const translations = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
         
-        // Save to local storage
-        let savedTranslations = JSON.parse(localStorage.getItem("savedTranslations") || "[]");
-        savedTranslations.push({
-          sourceLang: sourceLang,
-          targetLang: targetLang,
-          sourceLangName: sourceLangName,
-          targetLangName: targetLangName,
-          text: text,
-          date: date,
-          sentences: Array.from(document.querySelectorAll(".sentence-block")).map(block => {
-            return {
-              original: block.querySelector(".original").textContent,
-              wordByWord: block.querySelector(".word-mapping").textContent,
-              fluentTranslation: block.querySelector(".translation").textContent
-            };
-          })
+        translations.push({
+          text: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
+          fullText: text,
+          sourceLang: sourceLang.value,
+          targetLang: targetLang.value,
+          date: new Date().toISOString()
         });
         
-        localStorage.setItem("savedTranslations", JSON.stringify(savedTranslations));
+        // Keep only the latest 20 translations
+        if (translations.length > 20) {
+          translations.shift();
+        }
         
-        // Update saved list and show it
-        updateSavedList();
-        savedContainer.classList.add("visible");
+        localStorage.setItem('savedTranslations', JSON.stringify(translations));
+        loadSavedTranslations();
         
-        // Show success message
-        alert("Translation saved successfully!");
-      });
+        // Show feedback
+        alert('Translation saved!');
+      }
       
-      function updateSavedList() {
-        const savedList = document.getElementById("saved-list");
-        const savedTranslations = JSON.parse(localStorage.getItem("savedTranslations") || "[]");
+      // Function to load saved translations
+      function loadSavedTranslations() {
+        const translations = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
         
-        if (savedTranslations.length === 0) {
+        if (translations.length === 0) {
           savedList.innerHTML = `
             <div class="no-saved">
               <i class="fas fa-folder-open"></i>
@@ -1535,115 +1522,145 @@
           return;
         }
         
-        savedList.innerHTML = "";
+        savedList.innerHTML = '';
         
-        savedTranslations.forEach((item, index) => {
-          const savedItem = document.createElement("div");
-          savedItem.classList.add("saved-item");
+        // Sort by date (newest first)
+        translations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        for (const translation of translations) {
+          const item = document.createElement('div');
+          item.className = 'saved-item';
           
-          savedItem.innerHTML = `
-            <div class="saved-item-header">
-              <div class="saved-item-lang">${item.sourceLangName} → ${item.targetLangName}</div>
-              <div class="saved-item-date">${item.date}</div>
-            </div>
-            <div class="saved-item-text">${item.text.substring(0, 50)}${item.text.length > 50 ? "..." : ""}</div>
-          `;
+          const header = document.createElement('div');
+          header.className = 'saved-item-header';
           
-          savedItem.addEventListener("click", function() {
-            // Load this saved translation
-            document.getElementById("source-lang").value = item.sourceLang;
-            document.getElementById("target-lang").value = item.targetLang;
-            sourceText.value = item.text;
-            charCount.textContent = `${item.text.length} / 5000`;
-            
-            // Display the saved sentences
-            sentenceCounter = 0;
-            resultsContainer.innerHTML = `
-              <div class="output-header">
-                <div class="output-title">Saved Translation</div>
-                <div class="output-actions">
-                  <button class="output-action" id="copy-all"><i class="fas fa-copy"></i> Copy</button>
-                  <button class="output-action" id="download-results"><i class="fas fa-download"></i> Download</button>
-                  <button class="output-action" id="delete-saved"><i class="fas fa-trash"></i> Delete</button>
-                </div>
-              </div>
-              <div id="sentences-container"></div>
-            `;
-            
-            item.sentences.forEach(sentence => {
-              sentenceCounter++;
-              const sentencesContainer = document.getElementById("sentences-container");
-              
-              const html = `
-                <div class="sentence-block">
-                  <div class="sentence-header">
-                    <span class="sentence-number">Sentence ${sentenceCounter}</span>
-                  </div>
-                  <div class="original">${sentence.original}</div>
-                  <div class="word-mapping">${sentence.wordByWord}</div>
-                  <div class="translation">${sentence.fluentTranslation}</div>
-                  <div class="sentence-actions">
-                    <button class="sentence-action copy-sentence"><i class="fas fa-copy"></i> Copy</button>
-                  </div>
-                </div>
-              `;
-              
-              sentencesContainer.innerHTML += html;
-            });
-            
-            resultsContainer.classList.add("visible");
-            
-            // Setup result actions
-            setupResultActions();
-            
-            // Setup delete saved translation button
-            document.getElementById("delete-saved").addEventListener("click", function() {
-              if (confirm("Are you sure you want to delete this saved translation?")) {
-                savedTranslations.splice(index, 1);
-                localStorage.setItem("savedTranslations", JSON.stringify(savedTranslations));
-                updateSavedList();
-                alert("Translation deleted!");
-              }
-            });
-            
-            // Hide saved container
-            savedContainer.classList.remove("visible");
+          const lang = document.createElement('div');
+          lang.className = 'saved-item-lang';
+          lang.textContent = `${getLangName(translation.sourceLang)} → ${getLangName(translation.targetLang)}`;
+          
+          const date = document.createElement('div');
+          date.className = 'saved-item-date';
+          date.textContent = formatDate(translation.date);
+          
+          header.appendChild(lang);
+          header.appendChild(date);
+          
+          const text = document.createElement('div');
+          text.className = 'saved-item-text';
+          text.textContent = translation.text;
+          
+          item.appendChild(header);
+          item.appendChild(text);
+          
+          // Load saved translation when clicked
+          item.addEventListener('click', () => {
+            sourceText.value = translation.fullText;
+            sourceLang.value = translation.sourceLang;
+            targetLang.value = translation.targetLang;
+            updateCharCount();
+            savedContainer.classList.remove('visible');
+            window.scrollTo(0, sourceText.offsetTop - 100);
           });
           
-          savedList.appendChild(savedItem);
-        });
-      }
-      
-      // Initialize saved list
-      updateSavedList();
-      
-      // Speech synthesis
-      function speakText(text) {
-        if ("speechSynthesis" in window) {
-          const utterance = new SpeechSynthesisUtterance(text);
-          const langValue = document.getElementById("source-lang").value;
-          utterance.lang = langValue;
-          
-          // Find matching voice
-          const voices = window.speechSynthesis.getVoices();
-          const matchingVoice = voices.find(voice => voice.lang.toLowerCase().startsWith(langValue));
-          
-          if (matchingVoice) {
-            utterance.voice = matchingVoice;
-          }
-          
-          window.speechSynthesis.speak(utterance);
-        } else {
-          alert("Sorry, your browser does not support speech synthesis.");
+          savedList.appendChild(item);
         }
       }
       
-      // Ensure voices are loaded
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = function() {
-          window.speechSynthesis.getVoices();
-        };
+      // Helper function to format date
+      function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       }
+      
+      // Helper function to get language name
+      function getLangName(code) {
+        const languages = {
+          'en': 'English', 'fr': 'French', 'es': 'Spanish', 'de': 'German',
+          'it': 'Italian', 'ja': 'Japanese', 'ru': 'Russian', 'zh': 'Chinese',
+          'ar': 'Arabic', 'pt': 'Portuguese', 'hi': 'Hindi', 'ko': 'Korean'
+        };
+        return languages[code] || code;
+      }
+      
+      // Function to show loading UI
+      function showLoading() {
+        resultsContainer.innerHTML = `
+          <div class="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Processing your text...</div>
+            <div class="processing-steps">
+              <div class="processing-step" id="step-parsing">
+                <i class="fas fa-circle-notch fa-spin"></i> Analyzing text structure
+              </div>
+              <div class="processing-step" id="step-translating">
+                <i class="fas fa-circle-notch fa-spin"></i> Creating word-by-word translation
+              </div>
+              <div class="processing-step" id="step-fluent">
+                <i class="fas fa-circle-notch fa-spin"></i> Generating fluent translation
+              </div>
+            </div>
+          </div>
+        `;
+        resultsContainer.classList.add('visible');
+        
+        // Simulate progress for better UX
+        setTimeout(() => {
+          document.getElementById('step-parsing').classList.add('completed');
+          document.getElementById('step-parsing').innerHTML = '<i class="fas fa-check-circle"></i> Analyzing text structure';
+        }, 800);
+        
+        setTimeout(() => {
+          document.getElementById('step-translating').classList.add('completed');
+          document.getElementById('step-translating').innerHTML = '<i class="fas fa-check-circle"></i> Creating word-by-word translation';
+        }, 2000);
+      }
+      
+      // Function to hide loading UI
+      function hideLoading() {
+        const loadingElement = resultsContainer.querySelector('.loading');
+        if (loadingElement) {
+          loadingElement.remove();
+        }
+      }
+      
+      // Function to update loading progress
+      function updateLoadingProgress(message) {
+        const loadingText = resultsContainer.querySelector('.loading-text');
+        if (loadingText) {
+          loadingText.textContent = message;
+        }
+        
+        // Mark the fluent step as completed
+        const fluentStep = document.getElementById('step-fluent');
+        if (fluentStep) {
+          fluentStep.classList.add('completed');
+          fluentStep.innerHTML = '<i class="fas fa-check-circle"></i> Generating fluent translation';
+        }
+      }
+      
+      // Function to show error
+      function showError(message) {
+        resultsContainer.innerHTML = `
+          <div class="error">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Error</h3>
+            <p>${message}</p>
+            <button class="retry-btn">
+              <i class="fas fa-redo"></i> Try Again
+            </button>
+          </div>
+        `;
+        resultsContainer.classList.add('visible');
+        
+        // Add event listener to retry button
+        const retryBtn = resultsContainer.querySelector('.retry-btn');
+        retryBtn.addEventListener('click', () => {
+          processText();
+        });
+      }
+      
+      // Initialize character count
+      updateCharCount();
     });
   </script>
 </body>
