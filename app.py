@@ -137,6 +137,7 @@ def process_sentence(sentence, source_lang, target_lang):
         5. romanization: The {romanization_type} pronunciation guide for the original text
         """
     
+    # Update the prompt to ensure we get well-aligned word-by-word translations
     prompt = f"""
     Process this {get_language_name(source_lang)} sentence using the Birkenbihl method for a {get_language_name(target_lang)} speaker:
     
@@ -149,7 +150,11 @@ def process_sentence(sentence, source_lang, target_lang):
     4. wordTranslations: A dictionary mapping each word in the original to its translation
     {romanization_request}
     
-    IMPORTANT: Provide all translations (wordByWord and fluentTranslation) in {get_language_name(target_lang)}.
+    IMPORTANT: 
+    - Provide all translations (wordByWord and fluentTranslation) in {get_language_name(target_lang)}
+    - Make sure the wordByWord translation has EXACTLY the same number of words as the original sentence
+    - If a single source word translates to multiple target words, hyphenate them (e.g., "bonjour" -> "good-morning")
+    - If multiple source words translate to one target word, repeat the target word for each source word
 
     Example format (if source language is French and target language is English):
     {{
