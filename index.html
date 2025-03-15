@@ -189,7 +189,6 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
       background-repeat: no-repeat;
       background-position: right 1rem top 50%;
       background-size: 0.65rem auto;
@@ -770,6 +769,77 @@
       line-height: 1.8;
     }
     
+    /* NEW STYLES FOR ALIGNED WORD-BY-WORD TRANSLATION */
+    .aligned-translation {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      gap: 0.5rem 1rem;
+    }
+    
+    .word-pair {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .original-word {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--text);
+      min-width: 40px;
+    }
+    
+    .translation-word {
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 500;
+      min-width: 40px;
+    }
+    
+    .word-pair-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--border);
+      margin: 0.15rem 0;
+    }
+    
+    /* Display modes toggle */
+    .display-toggle {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .display-toggle label {
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    
+    .toggle-btn {
+      display: flex;
+      background: var(--primary-light);
+      border-radius: 1rem;
+      padding: 0.2rem;
+      cursor: pointer;
+    }
+    
+    .toggle-option {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      border-radius: 0.8rem;
+      transition: all 0.3s ease;
+    }
+    
+    .toggle-option.active {
+      background: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+    
     @keyframes spin {
       to {
         transform: rotate(360deg);
@@ -841,6 +911,9 @@
       .output-actions {
         justify-content: center;
       }
+      .word-pair {
+        min-width: 60px;
+      }
     }
   </style>
 </head>
@@ -867,7 +940,7 @@
       </div>
       <div class="info-content">
         <h3>About the Birkenbihl Method</h3>
-        <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making language learning more effective and intuitive.</p>
+        <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making language acquisition more natural and effective.</p>
       </div>
     </div>
     <div class="controls-container">
@@ -974,7 +1047,7 @@
       <div class="input-area">
         <div class="textarea-container">
           <textarea id="source-text" placeholder="Paste your text in a foreign language here..."></textarea>
-          <div class="character-count">0 / 5000</div>
+          <div class="character-count">0 / 15000</div>
         </div>
         
         <div class="example-texts">
@@ -999,669 +1072,546 @@
       <div class="output-area" id="results-container">
         <!-- Results will appear here -->
       </div>
-      
-      <div class="saved-translations" id="saved-container">
-        <h2><i class="fas fa-history"></i> Saved Translations</h2>
-        <div class="saved-list" id="saved-list">
-          <!-- Saved translations will appear here -->
-          <div class="no-saved">
-            <i class="fas fa-folder-open"></i>
-            <p>No saved translations yet</p>
-          </div>
-        </div>
+    </div>
+    
+    <div class="saved-translations" id="saved-translations">
+      <h2><i class="fas fa-history"></i> Translation History</h2>
+      <div class="saved-list" id="saved-list">
+        <!-- Saved translations will appear here -->
       </div>
     </div>
+    
+    <footer>
+      <p>LinguaLens &copy; 2024 | A better way to learn languages</p>
+      <div class="social-links">
+        <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" class="social-link" title="Discord"><i class="fab fa-discord"></i></a>
+      </div>
+    </footer>
   </div>
-  <footer>
-    <p>LinguaLens - Learn languages effectively with the Birkenbihl method</p>
-    <p>© 2023 LinguaLens</p>
-  </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // DOM elements
-      const themeToggle = document.getElementById('theme-toggle');
-      const savedToggle = document.getElementById('saved-toggle');
-      const sourceLang = document.getElementById('source-lang');
-      const targetLang = document.getElementById('target-lang');
-      const swapLangsBtn = document.getElementById('swap-languages');
-      const clearTextBtn = document.getElementById('clear-text');
-      const sourceText = document.getElementById('source-text');
-      const charCount = document.querySelector('.character-count');
-      const exampleTexts = document.querySelectorAll('.example-text');
-      const processBtn = document.getElementById('process-btn');
-      const saveBtn = document.getElementById('save-btn');
-      const resultsContainer = document.getElementById('results-container');
-      const savedContainer = document.getElementById('saved-container');
-      const savedList = document.getElementById('saved-list');
-      
-      // Examples for different languages
-      const examples = {
-        'fr': 'Je voudrais un café, s\'il vous plaît. Merci beaucoup!',
-        'es': 'Me gustaría tomar un café, por favor. ¡Muchas gracias!',
-        'de': 'Ich hätte gerne einen Kaffee, bitte. Vielen Dank!',
-        'it': 'Vorrei un caffè, per favore. Grazie mille!',
-        'zh': '我想要一杯咖啡，谢谢。非常感谢！',
-        'ja': 'コーヒーをお願いします。どうもありがとうございます！',
-        'ko': '커피 한 잔 주세요. 정말 감사합니다!',
-        'ru': 'Я бы хотел кофе, пожалуйста. Большое спасибо!'
-      };
-      
-      // Theme toggle functionality
-      themeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        
-        if (document.body.classList.contains('dark-mode')) {
-          themeToggle.querySelector('i').className = 'fas fa-sun';
-        } else {
-          themeToggle.querySelector('i').className = 'fas fa-moon';
-        }
-        
-        // Save preference to localStorage
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const icon = themeToggle.querySelector('i');
+      if (document.body.classList.contains('dark-mode')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
+    });
+
+    // Saved translations toggle
+    const savedToggle = document.getElementById('saved-toggle');
+    const savedTranslations = document.getElementById('saved-translations');
+    savedToggle.addEventListener('click', () => {
+      savedTranslations.classList.toggle('visible');
+    });
+
+    // Character count
+    const sourceText = document.getElementById('source-text');
+    const characterCount = document.querySelector('.character-count');
+    sourceText.addEventListener('input', () => {
+      const count = sourceText.value.length;
+      characterCount.textContent = `${count} / 15000`;
+      if (count > 15000) {
+        characterCount.style.color = 'var(--danger)';
+        sourceText.value = sourceText.value.substring(0, 15000);
+      } else {
+        characterCount.style.color = 'var(--text-light)';
+      }
+    });
+
+    // Swap languages
+    const swapLanguages = document.getElementById('swap-languages');
+    const sourceLang = document.getElementById('source-lang');
+    const targetLang = document.getElementById('target-lang');
+    swapLanguages.addEventListener('click', () => {
+      const temp = sourceLang.value;
+      sourceLang.value = targetLang.value;
+      targetLang.value = temp;
+    });
+
+    // Clear text
+    const clearText = document.getElementById('clear-text');
+    clearText.addEventListener('click', () => {
+      sourceText.value = '';
+      characterCount.textContent = '0 / 15000';
+    });
+
+    // Example texts
+    const exampleTexts = document.querySelectorAll('.example-text');
+    const examples = {
+      'fr': 'Je voudrais apprendre le français. C\'est une belle langue.',
+      'es': 'Me gustaría aprender español. Es un idioma muy bonito.',
+      'de': 'Ich möchte Deutsch lernen. Es ist eine schöne Sprache.',
+      'it': 'Vorrei imparare l\'italiano. È una bella lingua.',
+      'zh': '我想学习中文。这是一种美丽的语言。',
+      'ja': '日本語を勉強したいです。とても美しい言語です。',
+      'ko': '저는 한국어를 배우고 싶어요. 아름다운 언어입니다.'
+    };
+    exampleTexts.forEach(example => {
+      example.addEventListener('click', () => {
+        const lang = example.dataset.lang;
+        sourceLang.value = lang;
+        sourceText.value = examples[lang] || 'Example text';
+        characterCount.textContent = `${sourceText.value.length} / 15000`;
       });
-      
-      // Load theme preference
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-        themeToggle.querySelector('i').className = 'fas fa-sun';
+    });
+
+    // Process text functionality
+    const processBtn = document.getElementById('process-btn');
+    const resultsContainer = document.getElementById('results-container');
+    
+    processBtn.addEventListener('click', processText);
+
+    function processText() {
+      const text = sourceText.value.trim();
+      if (!text) {
+        alert('Please enter some text to process.');
+        return;
       }
-      
-      // Saved translations toggle
-      savedToggle.addEventListener('click', function() {
-        savedContainer.classList.toggle('visible');
-        loadSavedTranslations();
-      });
-      
-      // Swap languages
-      swapLangsBtn.addEventListener('click', function() {
-        const sourceVal = sourceLang.value;
-        const targetVal = targetLang.value;
-        
-        if (targetVal !== 'en') { // Can only swap if target is not English
-          sourceLang.value = targetVal;
-          targetLang.value = sourceVal;
-        }
-      });
-      
-      // Clear text
-      clearTextBtn.addEventListener('click', function() {
-        sourceText.value = '';
-        updateCharCount();
-      });
-      
-      // Character count update
-      sourceText.addEventListener('input', updateCharCount);
-      
-      function updateCharCount() {
-        const count = sourceText.value.length;
-        charCount.textContent = `${count} / 5000`;
-        
-        if (count > 5000) {
-          charCount.style.color = 'var(--danger)';
-        } else {
-          charCount.style.color = 'var(--text-light)';
-        }
-      }
-      
-      // Example texts functionality
-      exampleTexts.forEach(example => {
-        example.addEventListener('click', function() {
-          const lang = this.dataset.lang;
-          if (examples[lang]) {
-            sourceLang.value = lang;
-            sourceText.value = examples[lang];
-            updateCharCount();
-          }
-        });
-      });
-      
-      // Process button
-      processBtn.addEventListener('click', function() {
-        processText();
-      });
-      
-      // Save translation
-      saveBtn.addEventListener('click', function() {
-        saveTranslation();
-      });
-      
-      // Process text function
-      async function processText() {
-        const text = sourceText.value.trim();
-        if (!text) {
-          showError('Please enter some text to process');
-          return;
-        }
-        
-        if (text.length > 5000) {
-          showError('Text exceeds maximum length of 5000 characters');
-          return;
-        }
-        
-        // Show loading state
-        showLoading();
-        
-        try {
-          const response = await fetch('/process', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              text: text,
-              sourceLang: sourceLang.value,
-              targetLang: targetLang.value
-            })
-          });
-          
-          if (!response.ok) {
-            throw new Error('Server error');
-          }
-          
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          
-          resultsContainer.innerHTML = '';
-          resultsContainer.classList.add('visible');
-          
-          // Create output header
-          const outputHeader = document.createElement('div');
-          outputHeader.className = 'output-header';
-          
-          const outputTitle = document.createElement('div');
-          outputTitle.className = 'output-title';
-          outputTitle.textContent = 'Translation Results';
-          
-          const outputActions = document.createElement('div');
-          outputActions.className = 'output-actions';
-          
-          const copyAction = document.createElement('button');
-          copyAction.className = 'output-action';
-          copyAction.innerHTML = '<i class="fas fa-copy"></i> Copy';
-          copyAction.addEventListener('click', () => copyResults());
-          
-          const speakAllAction = document.createElement('button');
-          speakAllAction.className = 'output-action';
-          speakAllAction.innerHTML = '<i class="fas fa-volume-up"></i> Speak All';
-          speakAllAction.addEventListener('click', () => speakAllText());
-          
-          outputActions.appendChild(copyAction);
-          outputActions.appendChild(speakAllAction);
-          
-          outputHeader.appendChild(outputTitle);
-          outputHeader.appendChild(outputActions);
-          
-          resultsContainer.appendChild(outputHeader);
-          
-          let index = 0;
-          let sentences = [];
-          
-          while (true) {
-            const { value, done } = await reader.read();
-            
-            if (done) {
-              break;
-            }
-            
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
-            
-            for (const line of lines) {
-              if (line.trim()) {
-                try {
-                  const sentenceData = JSON.parse(line);
-                  sentences.push(sentenceData);
-                  
-                  const sentenceBlock = createSentenceBlock(sentenceData, index);
-                  resultsContainer.appendChild(sentenceBlock);
-                  index++;
-                  
-                  // Update the loading state to show progress
-                  updateLoadingProgress(`Processed ${index} sentences...`);
-                } catch (e) {
-                  console.error('Error parsing sentence data:', e);
-                }
-              }
-            }
-          }
-          
-          // Hide loading when complete
-          hideLoading();
-          
-        } catch (error) {
-          console.error('Error processing text:', error);
-          showError('An error occurred while processing your text. Please try again.');
-          hideLoading();
-        }
-      }
-      
-      // Function to create a sentence block with romanization support
-      function createSentenceBlock(data, index) {
-        const sentenceBlock = document.createElement('div');
-        sentenceBlock.className = 'sentence-block';
-        
-        // Create sentence header
-        const sentenceHeader = document.createElement('div');
-        sentenceHeader.className = 'sentence-header';
-        
-        const sentenceNumber = document.createElement('div');
-        sentenceNumber.className = 'sentence-number';
-        sentenceNumber.textContent = `Sentence ${index + 1}`;
-        
-        sentenceHeader.appendChild(sentenceNumber);
-        sentenceBlock.appendChild(sentenceHeader);
-        
-        // Original text
-        const original = document.createElement('div');
-        original.className = 'original';
-        original.textContent = data.original;
-        sentenceBlock.appendChild(original);
-        
-        // Romanization (if available) - NEW FEATURE
-        if (data.romanization) {
-          const romanization = document.createElement('div');
-          romanization.className = 'romanization';
-          romanization.textContent = data.romanization;
-          sentenceBlock.appendChild(romanization);
-        }
-        
-        // Word by word translation
-        const wordMapping = document.createElement('div');
-        wordMapping.className = 'word-mapping';
-        wordMapping.textContent = data.wordByWord;
-        sentenceBlock.appendChild(wordMapping);
-        
-        // Fluent translation
-        const translation = document.createElement('div');
-        translation.className = 'translation';
-        translation.textContent = data.fluentTranslation;
-        sentenceBlock.appendChild(translation);
-        
-        // Interactive words with translations
-        const words = document.createElement('div');
-        words.className = 'words-container';
-        
-        // Create word elements with tooltips
-        const originalWords = data.original.split(/\s+/);
-        for (const word of originalWords) {
-          if (word.trim()) {
-            const wordElement = document.createElement('span');
-            wordElement.className = 'word';
-            wordElement.textContent = word;
-            
-            if (data.wordTranslations[word]) {
-              const tooltip = document.createElement('span');
-              tooltip.className = 'tooltip';
-              tooltip.textContent = data.wordTranslations[word];
-              wordElement.appendChild(tooltip);
-            }
-            
-            words.appendChild(wordElement);
-            words.appendChild(document.createTextNode(' '));
-          }
-        }
-        
-        sentenceBlock.appendChild(words);
-        
-        // Add grammar explanation button
-        const grammarBtn = document.createElement('button');
-        grammarBtn.className = 'grammar-btn';
-        grammarBtn.innerHTML = '<i class="fas fa-book"></i>';
-        grammarBtn.title = 'Show grammar explanation';
-        grammarBtn.addEventListener('click', () => {
-          // Get grammar explanation
-          const grammarContainer = sentenceBlock.querySelector('.grammar-explanation') || 
-                                  createGrammarContainer(sentenceBlock);
-          
-          if (grammarContainer.classList.contains('visible')) {
-            grammarContainer.classList.remove('visible');
-          } else {
-            getGrammarExplanation(data.original, sourceLang.value, targetLang.value, grammarContainer);
-            grammarContainer.classList.add('visible');
-          }
-        });
-        
-        // Add text-to-speech button
-        const speakBtn = document.createElement('button');
-        speakBtn.className = 'speak-btn';
-        speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-        speakBtn.title = 'Listen to pronunciation';
-        speakBtn.addEventListener('click', () => {
-          speakText(data.original, sourceLang.value);
-        });
-        
-        sentenceBlock.appendChild(grammarBtn);
-        sentenceBlock.appendChild(speakBtn);
-        
-        return sentenceBlock;
-      }
-      
-      // Function to create grammar explanation container
-      function createGrammarContainer(sentenceBlock) {
-        const grammarContainer = document.createElement('div');
-        grammarContainer.className = 'grammar-explanation';
-        
-        const grammarTitle = document.createElement('div');
-        grammarTitle.className = 'grammar-title';
-        grammarTitle.innerHTML = '<i class="fas fa-book"></i> Grammar Explanation';
-        
-        const grammarLoading = document.createElement('div');
-        grammarLoading.className = 'grammar-loading';
-        grammarLoading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading grammar explanation...';
-        
-        grammarContainer.appendChild(grammarTitle);
-        grammarContainer.appendChild(grammarLoading);
-        sentenceBlock.appendChild(grammarContainer);
-        
-        return grammarContainer;
-      }
-      
-      // Function to get grammar explanation
-      async function getGrammarExplanation(sentence, sourceLang, targetLang, container) {
-        const loadingElement = container.querySelector('.grammar-loading');
-        loadingElement.style.display = 'flex';
-        
-        try {
-          const response = await fetch('/grammar-explanation', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              sentence: sentence,
-              sourceLang: sourceLang,
-              targetLang: targetLang
-            })
-          });
-          
-          if (!response.ok) {
-            throw new Error('Server error');
-          }
-          
-          const data = await response.json();
-          
-          // Remove loading element
-          loadingElement.style.display = 'none';
-          
-          // Remove any existing points
-          const existingPoints = container.querySelectorAll('.grammar-point');
-          existingPoints.forEach(point => point.remove());
-          
-          // Add grammar points
-          if (data.points && data.points.length > 0) {
-            data.points.forEach(point => {
-              const pointElement = document.createElement('div');
-              pointElement.className = 'grammar-point';
-              
-              // Replace **text** with highlighted span
-              const highlightedText = point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
-              pointElement.innerHTML = highlightedText;
-              
-              container.appendChild(pointElement);
-            });
-          } else {
-            const noPoints = document.createElement('div');
-            noPoints.className = 'grammar-point';
-            noPoints.textContent = 'No grammar points available for this sentence.';
-            container.appendChild(noPoints);
-          }
-          
-        } catch (error) {
-          console.error('Error fetching grammar explanation:', error);
-          loadingElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed to load grammar explanation';
-        }
-      }
-      
-      // Function to speak text using Web Speech API
-      function speakText(text, language) {
-        if ('speechSynthesis' in window) {
-          // Map language codes to speech synthesis voices
-          const langMap = {
-            'en': 'en-US',
-            'fr': 'fr-FR',
-            'es': 'es-ES',
-            'de': 'de-DE',
-            'it': 'it-IT',
-            'ja': 'ja-JP',
-            'ru': 'ru-RU',
-            'zh': 'zh-CN',
-            'ko': 'ko-KR'
-          };
-          
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = langMap[language] || language;
-          
-          speechSynthesis.speak(utterance);
-        } else {
-          alert('Text-to-speech is not supported in your browser.');
-        }
-      }
-      
-      // Function to speak all text in results
-      function speakAllText() {
-        const originals = resultsContainer.querySelectorAll('.original');
-        
-        if (originals.length === 0) {
-          return;
-        }
-        
-        // Cancel any current speech
-        if ('speechSynthesis' in window) {
-          speechSynthesis.cancel();
-        }
-        
-        // Speak each sentence with a delay
-        originals.forEach((original, index) => {
-          setTimeout(() => {
-            speakText(original.textContent, sourceLang.value);
-          }, index * 3000); // 3 second delay between sentences
-        });
-      }
-      
-      // Function to copy all results
-      function copyResults() {
-        const originals = resultsContainer.querySelectorAll('.original');
-        const translations = resultsContainer.querySelectorAll('.translation');
-        
-        if (originals.length === 0) {
-          return;
-        }
-        
-        let copyText = '';
-        for (let i = 0; i < originals.length; i++) {
-          copyText += originals[i].textContent + '\n';
-          copyText += translations[i].textContent + '\n\n';
-        }
-        
-        navigator.clipboard.writeText(copyText).then(() => {
-          alert('Translation copied to clipboard!');
-        });
-      }
-      
-      // Function to save translation
-      function saveTranslation() {
-        const text = sourceText.value.trim();
-        if (!text) {
-          return;
-        }
-        
-        const translations = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
-        
-        translations.push({
-          text: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
-          fullText: text,
-          sourceLang: sourceLang.value,
-          targetLang: targetLang.value,
-          date: new Date().toISOString()
-        });
-        
-        // Keep only the latest 20 translations
-        if (translations.length > 20) {
-          translations.shift();
-        }
-        
-        localStorage.setItem('savedTranslations', JSON.stringify(translations));
-        loadSavedTranslations();
-        
-        // Show feedback
-        alert('Translation saved!');
-      }
-      
-      // Function to load saved translations
-      function loadSavedTranslations() {
-        const translations = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
-        
-        if (translations.length === 0) {
-          savedList.innerHTML = `
-            <div class="no-saved">
-              <i class="fas fa-folder-open"></i>
-              <p>No saved translations yet</p>
+
+      // Display loading state
+      resultsContainer.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <div class="loading-text">Processing your text...</div>
+          <div class="processing-steps">
+            <div class="processing-step" id="step1">
+              <i class="fas fa-circle-notch fa-spin"></i> Analyzing text structure
             </div>
-          `;
-          return;
-        }
+            <div class="processing-step" id="step2">
+              <i class="fas fa-circle-notch fa-spin"></i> Creating word-by-word translation
+            </div>
+            <div class="processing-step" id="step3">
+              <i class="fas fa-circle-notch fa-spin"></i> Generating fluent translation
+            </div>
+          </div>
+        </div>
+      `;
+      resultsContainer.classList.add('visible');
+
+      // Simulate step completion
+      setTimeout(() => document.getElementById('step1').classList.add('completed'), 1000);
+      setTimeout(() => document.getElementById('step2').classList.add('completed'), 3000);
+      setTimeout(() => document.getElementById('step3').classList.add('completed'), 4500);
+
+      // Send request to backend
+      fetch('/process', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: text,
+          sourceLang: sourceLang.value,
+          targetLang: targetLang.value
+        }),
+      })
+      .then(response => {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
         
-        savedList.innerHTML = '';
-        
-        // Sort by date (newest first)
-        translations.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        for (const translation of translations) {
-          const item = document.createElement('div');
-          item.className = 'saved-item';
-          
-          const header = document.createElement('div');
-          header.className = 'saved-item-header';
-          
-          const lang = document.createElement('div');
-          lang.className = 'saved-item-lang';
-          lang.textContent = `${getLangName(translation.sourceLang)} → ${getLangName(translation.targetLang)}`;
-          
-          const date = document.createElement('div');
-          date.className = 'saved-item-date';
-          date.textContent = formatDate(translation.date);
-          
-          header.appendChild(lang);
-          header.appendChild(date);
-          
-          const text = document.createElement('div');
-          text.className = 'saved-item-text';
-          text.textContent = translation.text;
-          
-          item.appendChild(header);
-          item.appendChild(text);
-          
-          // Load saved translation when clicked
-          item.addEventListener('click', () => {
-            sourceText.value = translation.fullText;
-            sourceLang.value = translation.sourceLang;
-            targetLang.value = translation.targetLang;
-            updateCharCount();
-            savedContainer.classList.remove('visible');
-            window.scrollTo(0, sourceText.offsetTop - 100);
-          });
-          
-          savedList.appendChild(item);
-        }
-      }
-      
-      // Helper function to format date
-      function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      }
-      
-      // Helper function to get language name
-      function getLangName(code) {
-        const languages = {
-          'en': 'English', 'fr': 'French', 'es': 'Spanish', 'de': 'German',
-          'it': 'Italian', 'ja': 'Japanese', 'ru': 'Russian', 'zh': 'Chinese',
-          'ar': 'Arabic', 'pt': 'Portuguese', 'hi': 'Hindi', 'ko': 'Korean'
-        };
-        return languages[code] || code;
-      }
-      
-      // Function to show loading UI
-      function showLoading() {
+        // Create result container
         resultsContainer.innerHTML = `
-          <div class="loading">
-            <div class="spinner"></div>
-            <div class="loading-text">Processing your text...</div>
-            <div class="processing-steps">
-              <div class="processing-step" id="step-parsing">
-                <i class="fas fa-circle-notch fa-spin"></i> Analyzing text structure
-              </div>
-              <div class="processing-step" id="step-translating">
-                <i class="fas fa-circle-notch fa-spin"></i> Creating word-by-word translation
-              </div>
-              <div class="processing-step" id="step-fluent">
-                <i class="fas fa-circle-notch fa-spin"></i> Generating fluent translation
+          <div class="output-header">
+            <h2 class="output-title">Translation Results</h2>
+            <div class="output-actions">
+              <button class="output-action" id="copy-all">
+                <i class="fas fa-copy"></i> Copy All
+              </button>
+              <button class="output-action" id="download-results">
+                <i class="fas fa-download"></i> Download
+              </button>
+              <div class="display-toggle">
+                <label>Display:</label>
+                <div class="toggle-btn">
+                  <div class="toggle-option active" id="toggle-aligned">Aligned</div>
+                  <div class="toggle-option" id="toggle-inline">Inline</div>
+                </div>
               </div>
             </div>
           </div>
+          <div id="sentences-container"></div>
         `;
-        resultsContainer.classList.add('visible');
         
-        // Simulate progress for better UX
-        setTimeout(() => {
-          document.getElementById('step-parsing').classList.add('completed');
-          document.getElementById('step-parsing').innerHTML = '<i class="fas fa-check-circle"></i> Analyzing text structure';
-        }, 800);
+        // Setup display toggle functionality
+        setupDisplayToggle();
         
-        setTimeout(() => {
-          document.getElementById('step-translating').classList.add('completed');
-          document.getElementById('step-translating').innerHTML = '<i class="fas fa-check-circle"></i> Creating word-by-word translation';
-        }, 2000);
-      }
-      
-      // Function to hide loading UI
-      function hideLoading() {
-        const loadingElement = resultsContainer.querySelector('.loading');
-        if (loadingElement) {
-          loadingElement.remove();
-        }
-      }
-      
-      // Function to update loading progress
-      function updateLoadingProgress(message) {
-        const loadingText = resultsContainer.querySelector('.loading-text');
-        if (loadingText) {
-          loadingText.textContent = message;
+        // Setup stream reading
+        function processStream() {
+          return reader.read().then(({ done, value }) => {
+            if (done) {
+              if (buffer) {
+                try {
+                  const result = JSON.parse(buffer);
+                  addSentenceToResults(result);
+                } catch (e) {
+                  console.error('Error parsing JSON:', e);
+                }
+              }
+              return;
+            }
+            
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            
+            buffer = lines.pop(); // Keep the incomplete line in the buffer
+            
+            lines.forEach(line => {
+              if (line.trim()) {
+                try {
+                  const result = JSON.parse(line);
+                  addSentenceToResults(result);
+                } catch (e) {
+                  console.error('Error parsing JSON:', e);
+                }
+              }
+            });
+            
+            return processStream();
+          });
         }
         
-        // Mark the fluent step as completed
-        const fluentStep = document.getElementById('step-fluent');
-        if (fluentStep) {
-          fluentStep.classList.add('completed');
-          fluentStep.innerHTML = '<i class="fas fa-check-circle"></i> Generating fluent translation';
-        }
-      }
-      
-      // Function to show error
-      function showError(message) {
+        processStream();
+      })
+      .catch(error => {
+        console.error('Error:', error);
         resultsContainer.innerHTML = `
           <div class="error">
-            <i class="fas fa-exclamation-circle"></i>
-            <h3>Error</h3>
-            <p>${message}</p>
-            <button class="retry-btn">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Oops! Something went wrong.</h3>
+            <p>${error.message || 'There was an error processing your text. Please try again.'}</p>
+            <button class="retry-btn" onclick="processText()">
               <i class="fas fa-redo"></i> Try Again
             </button>
           </div>
         `;
-        resultsContainer.classList.add('visible');
-        
-        // Add event listener to retry button
-        const retryBtn = resultsContainer.querySelector('.retry-btn');
-        retryBtn.addEventListener('click', () => {
-          processText();
-        });
+      });
+    }
+    
+    // Function to set up display toggle functionality
+    function setupDisplayToggle() {
+      const toggleAligned = document.getElementById('toggle-aligned');
+      const toggleInline = document.getElementById('toggle-inline');
+      
+      toggleAligned.addEventListener('click', () => {
+        toggleAligned.classList.add('active');
+        toggleInline.classList.remove('active');
+        document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'flex');
+        document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'none');
+      });
+      
+      toggleInline.addEventListener('click', () => {
+        toggleInline.classList.add('active');
+        toggleAligned.classList.remove('active');
+        document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'block');
+      });
+    }
+
+    // Add a sentence to results
+    let sentenceCounter = 0;
+    
+    function addSentenceToResults(result) {
+      const sentencesContainer = document.getElementById('sentences-container');
+      sentenceCounter++;
+      
+      // Create sentence block
+      const sentenceBlock = document.createElement('div');
+      sentenceBlock.className = 'sentence-block';
+      
+      // Create header with sentence number
+      const sentenceHeader = document.createElement('div');
+      sentenceHeader.className = 'sentence-header';
+      sentenceHeader.innerHTML = `<span class="sentence-number">Sentence ${sentenceCounter}</span>`;
+      
+      // Create original text
+      const original = document.createElement('div');
+      original.className = 'original';
+      original.textContent = result.original;
+      
+      // Create aligned word-by-word translation (NEW)
+      const alignedTranslation = document.createElement('div');
+      alignedTranslation.className = 'aligned-translation';
+      
+      // Split original text and wordByWord translation into words
+      const originalWords = result.original.split(/\s+/);
+      const translationWords = result.wordByWord.split(/\s+/);
+      
+      // For each word, create a word pair with original and translation vertically aligned
+      for (let i = 0; i < Math.max(originalWords.length, translationWords.length); i++) {
+        if (originalWords[i]) {
+          const wordPair = document.createElement('div');
+          wordPair.className = 'word-pair';
+          
+          const originalWord = document.createElement('div');
+          originalWord.className = 'original-word';
+          // Remove punctuation when looking up in wordTranslations
+          const cleanWord = originalWords[i].replace(/[.,!?;:"'-]/g, '');
+          originalWord.textContent = originalWords[i];
+          
+          const divider = document.createElement('div');
+          divider.className = 'word-pair-divider';
+          
+          const translationWord = document.createElement('div');
+          translationWord.className = 'translation-word';
+          translationWord.textContent = translationWords[i] || '';
+          
+          // Set tooltip with exact translation if available in wordTranslations
+          if (result.wordTranslations && result.wordTranslations[cleanWord]) {
+            const tooltip = document.createElement('span');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = result.wordTranslations[cleanWord];
+            originalWord.appendChild(tooltip);
+          }
+          
+          wordPair.appendChild(originalWord);
+          wordPair.appendChild(divider);
+          wordPair.appendChild(translationWord);
+          alignedTranslation.appendChild(wordPair);
+        }
       }
       
-      // Initialize character count
-      updateCharCount();
+      // Create traditional word-by-word mapping (for toggle option)
+      const wordMapping = document.createElement('div');
+      wordMapping.className = 'word-mapping';
+      wordMapping.style.display = 'none'; // Hidden by default, aligned view is default
+      wordMapping.textContent = result.wordByWord;
+      
+      // Create fluent translation
+      const translation = document.createElement('div');
+      translation.className = 'translation';
+      translation.textContent = result.fluentTranslation;
+      
+      // Add romanization if available (for languages like Chinese, Japanese, Korean)
+      let romanization = '';
+      if (result.romanization) {
+        romanization = `
+          <div class="romanization">
+            ${result.romanization}
+          </div>
+        `;
+      }
+      
+      // Create grammar explanation button and container
+      const grammarBtn = document.createElement('button');
+      grammarBtn.className = 'grammar-btn';
+      grammarBtn.innerHTML = '<i class="fas fa-book"></i>';
+      grammarBtn.title = 'Show grammar explanation';
+      
+      const grammarExplanation = document.createElement('div');
+      grammarExplanation.className = 'grammar-explanation';
+      grammarExplanation.id = `grammar-${sentenceCounter}`;
+      grammarExplanation.innerHTML = `
+        <div class="grammar-loading">
+          <i class="fas fa-circle-notch fa-spin"></i> Loading grammar explanation...
+        </div>
+      `;
+      
+      // Create speak button
+      const speakBtn = document.createElement('button');
+      speakBtn.className = 'speak-btn';
+      speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+      speakBtn.title = 'Listen to pronunciation';
+      
+      // Add event listener for grammar button
+      grammarBtn.addEventListener('click', function() {
+        const explanationDiv = document.getElementById(`grammar-${sentenceCounter}`);
+        explanationDiv.classList.toggle('visible');
+        
+        // If it's the first time showing, fetch grammar explanation
+        if (explanationDiv.querySelector('.grammar-loading')) {
+          fetch('/grammar-explanation', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              sentence: result.original,
+              sourceLang: sourceLang.value,
+              targetLang: targetLang.value
+            }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            let html = `<div class="grammar-title"><i class="fas fa-book"></i> Grammar Breakdown</div>`;
+            
+            if (data.points && data.points.length > 0) {
+              data.points.forEach(point => {
+                // Replace ** with grammar-highlight class
+                const formattedPoint = point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
+                html += `<div class="grammar-point">${formattedPoint}</div>`;
+              });
+            } else {
+              html = `<div class="grammar-title"><i class="fas fa-info-circle"></i> Note</div>
+                     <div class="grammar-point">No specific grammar points to highlight in this simple sentence.</div>`;
+            }
+            
+            explanationDiv.innerHTML = html;
+          })
+          .catch(error => {
+            explanationDiv.innerHTML = `
+              <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
+              <div class="grammar-point">Could not load grammar explanation. Please try again.</div>
+            `;
+          });
+        }
+      });
+      
+      // Add event listener for speak button
+      speakBtn.addEventListener('click', function() {
+        const utterance = new SpeechSynthesisUtterance(result.original);
+        utterance.lang = getLanguageCode(sourceLang.value);
+        speechSynthesis.speak(utterance);
+      });
+      
+      // Assemble sentence block
+      sentenceBlock.appendChild(sentenceHeader);
+      sentenceBlock.appendChild(original);
+      sentenceBlock.appendChild(alignedTranslation);
+      sentenceBlock.appendChild(wordMapping);
+      if (romanization) {
+        const romanizationDiv = document.createElement('div');
+        romanizationDiv.className = 'romanization';
+        romanizationDiv.textContent = result.romanization;
+        sentenceBlock.appendChild(romanizationDiv);
+      }
+      sentenceBlock.appendChild(translation);
+      sentenceBlock.appendChild(grammarExplanation);
+      sentenceBlock.appendChild(grammarBtn);
+      sentenceBlock.appendChild(speakBtn);
+      
+      // Add the sentence block to the container
+      sentencesContainer.appendChild(sentenceBlock);
+    }
+    
+    // Helper function to get full language code for speech synthesis
+    function getLanguageCode(code) {
+      const langMap = {
+        'en': 'en-US',
+        'fr': 'fr-FR',
+        'es': 'es-ES',
+        'de': 'de-DE',
+        'it': 'it-IT',
+        'ja': 'ja-JP',
+        'ru': 'ru-RU',
+        'zh': 'zh-CN',
+        'ar': 'ar-SA',
+        'pt': 'pt-BR',
+        'hi': 'hi-IN',
+        'ko': 'ko-KR'
+      };
+      return langMap[code] || code;
+    }
+    
+    // Save translation functionality
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.addEventListener('click', () => {
+      const text = sourceText.value.trim();
+      if (!text) {
+        alert('No text to save.');
+        return;
+      }
+      
+      // Get existing saved translations
+      let savedItems = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
+      
+      // Add new translation
+      savedItems.unshift({
+        text: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+        sourceLang: sourceLang.value,
+        targetLang: targetLang.value,
+        date: new Date().toLocaleString(),
+        fullText: text
+      });
+      
+      // Keep only the most recent 10 items
+      if (savedItems.length > 10) {
+        savedItems = savedItems.slice(0, 10);
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('savedTranslations', JSON.stringify(savedItems));
+      
+      // Update the UI
+      updateSavedTranslations();
+      
+      // Show confirmation
+      alert('Translation saved!');
     });
+    
+    // Update saved translations list
+    function updateSavedTranslations() {
+      const savedList = document.getElementById('saved-list');
+      const savedItems = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
+      
+      if (savedItems.length === 0) {
+        savedList.innerHTML = `
+          <div class="no-saved">
+            <i class="fas fa-history"></i>
+            <p>No saved translations yet</p>
+          </div>
+        `;
+        return;
+      }
+      
+      savedList.innerHTML = savedItems.map((item, index) => `
+        <div class="saved-item" data-index="${index}">
+          <div class="saved-item-header">
+            <span class="saved-item-lang">${getLanguageName(item.sourceLang)} → ${getLanguageName(item.targetLang)}</span>
+            <span class="saved-item-date">${item.date}</span>
+          </div>
+          <div class="saved-item-text">${item.text}</div>
+        </div>
+      `).join('');
+      
+      // Add click event to load saved translation
+      document.querySelectorAll('.saved-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const index = item.dataset.index;
+          const savedItem = savedItems[index];
+          
+          sourceLang.value = savedItem.sourceLang;
+          targetLang.value = savedItem.targetLang;
+          sourceText.value = savedItem.fullText;
+          characterCount.textContent = `${sourceText.value.length} / 15000`;
+          
+          // Hide saved translations panel
+          savedTranslations.classList.remove('visible');
+          
+          // Process the text automatically
+          processText();
+        });
+      });
+    }
+    
+    // Helper function to get language name
+    function getLanguageName(code) {
+      const langNames = {
+        'en': 'English', 'fr': 'French', 'es': 'Spanish', 'de': 'German',
+        'it': 'Italian', 'ja': 'Japanese', 'ru': 'Russian', 'zh': 'Chinese',
+        'ar': 'Arabic', 'pt': 'Portuguese', 'hi': 'Hindi', 'ko': 'Korean'
+      };
+      return langNames[code] || code.toUpperCase();
+    }
+    
+    // Initialize saved translations
+    updateSavedTranslations();
+    
+    // Check for dark mode preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark-mode');
+      themeToggle.querySelector('i').classList.remove('fa-moon');
+      themeToggle.querySelector('i').classList.add('fa-sun');
+    }
   </script>
 </body>
 </html>
