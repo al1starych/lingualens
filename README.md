@@ -125,7 +125,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Vera F. Birkenbihl**: For her groundbreaking language learning methodology.
 - **Google Gemini API**: Powers translation and grammar analysis.
 - **Open Source Community**: For tools like Flask and Font Awesome.
-- **Grok 3, Claude Sonnet 3.7, ChatGPT**: For help in development. 
+- **Grok 3, Claude Sonnet 3.7, ChatGPT, other AI systems**: For help in development. 
 
 ## Contact
 
