@@ -1,6 +1,5 @@
 flask
 google.generativeai
-re
 json
 os
 time
