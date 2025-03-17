@@ -379,12 +379,21 @@
       font-weight: 500;
       color: var(--text-light);
     }
-    .original {
-      font-size: 1.35rem;
-      margin-bottom: 1rem;
-      line-height: 1.8;
-      font-weight: 500;
-    }
+.original {
+  font-size: 1.35rem;
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  font-weight: 500;
+  transition: opacity 0.3s ease, display 0.3s ease; /* Add transition for smooth hiding/showing */
+}
+
+.original[style*="display: none"] {
+  opacity: 0; /* Ensure it fades out when hidden */
+}
+
+.original[style*="display: block"] {
+  opacity: 1; /* Ensure it fades in when shown */
+}
     .word-mapping {
       font-size: 1.1rem;
       margin-bottom: 1rem;
@@ -788,7 +797,7 @@
     .original-word {
       font-weight: 600;
       font-size: 1.2rem;
-      color: var(--text);
+      color: #f7e600;
       min-width: 40px;
     }
     
@@ -939,7 +948,6 @@
         <i class="fas fa-info-circle"></i>
       </div>
       <div class="info-content">
-        <h3>About the Birkenbihl Method</h3>
         <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making language acquisition more natural and effective.</p>
       </div>
     </div>
@@ -1047,7 +1055,7 @@
       <div class="input-area">
         <div class="textarea-container">
           <textarea id="source-text" placeholder="Paste your text in a foreign language here..."></textarea>
-          <div class="character-count">0 / 15000</div>
+          <div class="character-count">0 / 200000</div>
         </div>
         
         <div class="example-texts">
@@ -1082,7 +1090,7 @@
     </div>
     
     <footer>
-      <p>LinguaLens &copy; 2024 | A better way to learn languages</p>
+      <p>LinguaLens &copy; 2025 | A better way to learn languages</p>
       <div class="social-links">
         <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
         <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
@@ -1118,10 +1126,10 @@
     const characterCount = document.querySelector('.character-count');
     sourceText.addEventListener('input', () => {
       const count = sourceText.value.length;
-      characterCount.textContent = `${count} / 15000`;
-      if (count > 15000) {
+      characterCount.textContent = `${count} / 200000`;
+      if (count > 200000) {
         characterCount.style.color = 'var(--danger)';
-        sourceText.value = sourceText.value.substring(0, 15000);
+        sourceText.value = sourceText.value.substring(0, 200000);
       } else {
         characterCount.style.color = 'var(--text-light)';
       }
@@ -1141,7 +1149,7 @@
     const clearText = document.getElementById('clear-text');
     clearText.addEventListener('click', () => {
       sourceText.value = '';
-      characterCount.textContent = '0 / 15000';
+      characterCount.textContent = '0 / 200000';
     });
 
     // Example texts
@@ -1160,7 +1168,7 @@
         const lang = example.dataset.lang;
         sourceLang.value = lang;
         sourceText.value = examples[lang] || 'Example text';
-        characterCount.textContent = `${sourceText.value.length} / 15000`;
+        characterCount.textContent = `${sourceText.value.length} / 200000`;
       });
     });
 
@@ -1298,24 +1306,29 @@
     }
     
     // Function to set up display toggle functionality
-    function setupDisplayToggle() {
-      const toggleAligned = document.getElementById('toggle-aligned');
-      const toggleInline = document.getElementById('toggle-inline');
-      
-      toggleAligned.addEventListener('click', () => {
-        toggleAligned.classList.add('active');
-        toggleInline.classList.remove('active');
-        document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'flex');
-        document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'none');
-      });
-      
-      toggleInline.addEventListener('click', () => {
-        toggleInline.classList.add('active');
-        toggleAligned.classList.remove('active');
-        document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'block');
-      });
-    }
+// Function to set up display toggle functionality
+function setupDisplayToggle() {
+  const toggleAligned = document.getElementById('toggle-aligned');
+  const toggleInline = document.getElementById('toggle-inline');
+
+  toggleAligned.addEventListener('click', () => {
+    toggleAligned.classList.add('active');
+    toggleInline.classList.remove('active');
+    document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'flex');
+    document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'none');
+    // Hide the original sentence in Aligned mode
+    document.querySelectorAll('.original').forEach(el => el.style.display = 'none');
+  });
+
+  toggleInline.addEventListener('click', () => {
+    toggleInline.classList.add('active');
+    toggleAligned.classList.remove('active');
+    document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'block');
+    // Show the original sentence in Inline mode
+    document.querySelectorAll('.original').forEach(el => el.style.display = 'block');
+  });
+}
 
     // Add a sentence to results
     let sentenceCounter = 0;
@@ -1421,6 +1434,24 @@
       speakBtn.className = 'speak-btn';
       speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
       speakBtn.title = 'Listen to pronunciation';
+
+      // Add hover event for automatic speech on hover
+      let utterance = null;
+  sentenceBlock.addEventListener('mouseenter', () => {
+    // Stop any ongoing speech
+    speechSynthesis.cancel();
+    
+    // Create new utterance
+    utterance = new SpeechSynthesisUtterance(result.original);
+    utterance.lang = getLanguageCode(sourceLang.value);
+    speechSynthesis.speak(utterance);
+  });
+  
+  sentenceBlock.addEventListener('mouseleave', () => {
+    // Stop speech when cursor leaves
+    speechSynthesis.cancel();
+    utterance = null;
+  });
       
       // Add event listener for grammar button
       grammarBtn.addEventListener('click', function() {
@@ -1563,15 +1594,6 @@
         return;
       }
       
-      savedList.innerHTML = savedItems.map((item, index) => `
-        <div class="saved-item" data-index="${index}">
-          <div class="saved-item-header">
-            <span class="saved-item-lang">${getLanguageName(item.sourceLang)} → ${getLanguageName(item.targetLang)}</span>
-            <span class="saved-item-date">${item.date}</span>
-          </div>
-          <div class="saved-item-text">${item.text}</div>
-        </div>
-      `).join('');
       
       // Add click event to load saved translation
       document.querySelectorAll('.saved-item').forEach(item => {
@@ -1582,7 +1604,7 @@
           sourceLang.value = savedItem.sourceLang;
           targetLang.value = savedItem.targetLang;
           sourceText.value = savedItem.fullText;
-          characterCount.textContent = `${sourceText.value.length} / 15000`;
+          characterCount.textContent = `${sourceText.value.length} / 200000`;
           
           // Hide saved translations panel
           savedTranslations.classList.remove('visible');
