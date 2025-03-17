@@ -126,6 +126,10 @@ def split_into_sentences(text, language=None):
     
     return result
 
+import difflib
+import re
+import json
+
 def process_sentence(sentence, source_lang, target_lang):
     # Check if romanization is needed (for Chinese, Japanese, Korean)
     needs_romanization = source_lang in ['zh', 'ja', 'ko']
@@ -137,7 +141,7 @@ def process_sentence(sentence, source_lang, target_lang):
         5. romanization: The {romanization_type} pronunciation guide for the original text
         """
     
-    # Update the prompt to ensure we get well-aligned word-by-word translations
+    # Form the prompt for the Gemini model
     prompt = f"""
     Process this {get_language_name(source_lang)} sentence using the Birkenbihl method for a {get_language_name(target_lang)} speaker:
     
@@ -155,41 +159,84 @@ def process_sentence(sentence, source_lang, target_lang):
     - Make sure the wordByWord translation has EXACTLY the same number of words as the original sentence
     - If a single source word translates to multiple target words, hyphenate them (e.g., "bonjour" -> "good-morning")
     - If multiple source words translate to one target word, repeat the target word for each source word
-
-    Example format (if source language is French and target language is English):
-    {{
-        "original": "Je mange une pomme",
-        "wordByWord": "I eat an apple",
-        "fluentTranslation": "I am eating an apple",
-        "wordTranslations": {{
-            "je": "I",
-            "mange": "eat",
-            "une": "an",
-            "pomme": "apple"
-        }}
-    }}
     """
     
     try:
+        # Send request to Gemini model
         response = model.generate_content(prompt)
         response_text = response.text
-        try:
-            json_match = re.search(r'```(?:json)?\n(.*?)\n```', response_text, re.DOTALL)
-            if json_match:
-                return json.loads(json_match.group(1))
-            return json.loads(response_text)
-        except:
-            # Create a default response structure
-            result = {
-                "original": sentence,
-                "wordByWord": "Translation unavailable",
-                "fluentTranslation": "Translation unavailable",
-                "wordTranslations": {}
-            }
-            # Add romanization field if needed
-            if needs_romanization:
-                result["romanization"] = "Romanization unavailable"
-            return result
+        
+        # Extract JSON from response
+        json_match = re.search(r'```(?:json)?\n(.*?)\n```', response_text, re.DOTALL)
+        if json_match:
+            result = json.loads(json_match.group(1))
+        else:
+            result = json.loads(response_text)
+
+        # Split the original sentence into words
+        original_words = sentence.split()
+        print(f"Original words: {len(original_words)} - {original_words}")
+
+        # Clean punctuation from words for lookup in wordTranslations
+        # For example, "sei," becomes "sei" for dictionary lookup
+        cleaned_original_words = [re.sub(r'[.,!?;:"\'-]', '', word) for word in original_words]
+
+        # Initialize the word-by-word translation list
+        word_by_word_words = []
+
+        # For each original word, find its translation
+        for idx, (orig_word, cleaned_word) in enumerate(zip(original_words, cleaned_original_words)):
+            # Check if the cleaned word exists in wordTranslations
+            if cleaned_word in result.get('wordTranslations', {}):
+                translation = result['wordTranslations'][cleaned_word]
+                # If the original word had punctuation, append it to the translation
+                if orig_word != cleaned_word:
+                    # Extract punctuation from the original word
+                    punctuation = orig_word[len(cleaned_word):]
+                    translation += punctuation
+                word_by_word_words.append(translation)
+            else:
+                # If the word is not in wordTranslations, translate it individually
+                print(f"Word '{cleaned_word}' not found in wordTranslations, requesting translation...")
+                word_prompt = f"""
+                Translate the word "{cleaned_word}" from {get_language_name(source_lang)} to {get_language_name(target_lang)} in the context of the sentence: "{sentence}"
+                Provide the translation as a single word or a hyphenated phrase if necessary. Return only the translation.
+                """
+                word_response = model.generate_content(word_prompt)
+                word_translation = word_response.text.strip()
+                print(f"Translated '{cleaned_word}' to '{word_translation}'")
+
+                # If the original word had punctuation, append it to the translation
+                if orig_word != cleaned_word:
+                    punctuation = orig_word[len(cleaned_word):]
+                    word_translation += punctuation
+                word_by_word_words.append(word_translation)
+                # Update wordTranslations for future reference
+                result.setdefault('wordTranslations', {})[cleaned_word] = word_translation
+
+        # Update the wordByWord field with the correct number of words
+        result['wordByWord'] = ' '.join(word_by_word_words)
+        print(f"Updated wordByWord words: {len(word_by_word_words)} - {word_by_word_words}")
+        print(f"Updated wordByWord: {result['wordByWord']}")
+
+        # Verify the word count matches
+        if len(original_words) != len(word_by_word_words):
+            print(f"Warning: Word count mismatch after processing! Original: {len(original_words)}, WordByWord: {len(word_by_word_words)}")
+
+        return result
+
+    except Exception as e:
+        print(f"Error processing sentence: {e}")
+        result = {
+            "original": sentence,
+            "wordByWord": "Error processing translation",
+            "fluentTranslation": "Error processing translation",
+            "wordTranslations": {}
+        }
+        if needs_romanization:
+            result["romanization"] = "Romanization unavailable"
+        return result
+
     except Exception as e:
         print(f"Error processing sentence: {e}")
         result = {
