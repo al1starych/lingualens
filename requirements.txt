@@ -1,5 +1,2 @@
 flask
 google.generativeai
-json
-os
-time
