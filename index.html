@@ -90,6 +90,7 @@
       font-weight: 600;
       transform: rotate(15deg);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      visibility: hidden;
     }
     .tagline {
       font-size: 1.3rem;
@@ -2229,89 +2230,78 @@ function appendTranslation(result) {
             existingExplanation.remove();
             return;
         }
-        
-        getGrammarExplanation(result.original, document.getElementById('source-lang').value, this);
+
+        const targetLang = document.getElementById('target-lang').value;
+        getGrammarExplanation(result.original, document.getElementById('source-lang').value, targetLang, this);
     });
 }
     
     // Grammar explanation function with API key handling
-    function getGrammarExplanation(sentence, sourceLang, grammarButton) {
-      // Get API key
-      const apiKey = localStorage.getItem('geminiApiKey');
-      
-      if (!apiKey) {
-        document.getElementById('api-key-modal').classList.add('active');
-        showNotification('Please set your API key first', 'error');
-        return;
-      }
-      
-      // Show loading state in the grammar explanation area
-      const explanationId = `grammar-explanation-${Date.now()}`;
-      const explanationContainer = document.createElement('div');
-      explanationContainer.className = 'grammar-explanation visible';
-      explanationContainer.id = explanationId;
-      explanationContainer.innerHTML = `
-        <div class="grammar-loading">
-          <i class="fas fa-circle-notch fa-spin"></i> Generating grammar explanation...
-        </div>
-      `;
-      
-      // Insert after the button's parent element (sentence-block)
-      const sentenceBlock = grammarButton.closest('.sentence-block');
-      sentenceBlock.insertAdjacentElement('afterend', explanationContainer);
-      
-      // Send request to server with the API key
-      fetch('/grammar-explanation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sentence: sentence,
-          sourceLang: sourceLang,
-          targetLang: 'en', // Assuming target language is English
-          apiKey: apiKey // Send the API key with the request
-        }),
-      })
-      .then(response => response.json())
-      .then(data => {
+    function getGrammarExplanation(sentence, sourceLang, targetLang, grammarButton) {
+  // Get API key
+  const apiKey = localStorage.getItem('geminiApiKey');
+  
+  if (!apiKey) {
+    document.getElementById('api-key-modal').classList.add('active');
+    showNotification('Please set your API key first', 'error');
+    return;
+  }
+  
+  // Show loading state in the grammar explanation area
+  const explanationId = `grammar-explanation-${Date.now()}`;
+  const explanationContainer = document.createElement('div');
+  explanationContainer.className = 'grammar-explanation visible';
+  explanationContainer.id = explanationId;
+  explanationContainer.innerHTML = `
+    <div class="grammar-loading">
+      <i class="fas fa-circle-notch fa-spin"></i> Generating grammar explanation...
+    </div>
+  `;
+  
+  // Insert after the button's parent element (sentence-block)
+  const sentenceBlock = grammarButton.closest('.sentence-block');
+  sentenceBlock.insertAdjacentElement('afterend', explanationContainer);
+  
+  // Send request to server with the API key
+  fetch('/grammar-explanation', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sentence: sentence,
+      sourceLang: sourceLang,
+      targetLang: targetLang,
+      apiKey: apiKey
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
     if (data.error) {
-        document.getElementById(explanationId).innerHTML = `
-            <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
-            <p>Unable to generate grammar explanation: ${data.error}</p>
-        `;
-        return;
+      document.getElementById(explanationId).innerHTML = `
+        <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
+        <p>Unable to generate grammar explanation: ${data.error}</p>
+      `;
+      return;
     }
     
-    let pointsHtml = '';
+    // Initialize raw content
+    let rawContent = '';
     
-    if (data.points && Array.isArray(data.points)) {
-        data.points.forEach(point => {
-            if (typeof point === 'string') {
-                // Replace **text** with <span class="grammar-highlight">text</span>
-                const highlightedPoint = point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
-                pointsHtml += `<div class="grammar-point">${highlightedPoint}</div>`;
-            } else {
-                console.error('Invalid grammar point:', point);
-                pointsHtml += `<div class="grammar-point">Invalid grammar point format</div>`;
-            }
-        });
-    } else {
-        pointsHtml = '<p>No grammar points found for this sentence.</p>';
-    }
     
+    // Display the raw content as-is, wrapped in <pre> to preserve whitespace and line breaks
     document.getElementById(explanationId).innerHTML = `
-        <div class="grammar-title"><i class="fas fa-book"></i> Grammar Explanation</div>
-        ${pointsHtml}
+      <div class="grammar-title"><i class="fas fa-book"></i> Grammar Explanation</div>
+      <pre>${rawContent}</pre>
     `;
-})
-      .catch(error => {
-        document.getElementById(explanationId).innerHTML = `
-          <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
-          <p>Unable to generate grammar explanation: ${error.message}</p>
-        `;
-      });
-    }
+  })
+  .catch(error => {
+    document.getElementById(explanationId).innerHTML = `
+      <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
+      <p>Unable to generate grammar explanation: ${error.message}</p>
+    `;
+  });
+}
     
     // Text-to-speech function
     function speak(text, lang) {
