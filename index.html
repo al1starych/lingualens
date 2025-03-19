@@ -849,6 +849,202 @@
       font-weight: 500;
     }
     
+    /* API Key Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      overflow: auto;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 600px;
+      overflow: hidden;
+      animation: slideUp 0.4s ease;
+    }
+
+    .modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h2 {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .modal-header h2 i {
+      margin-right: 0.75rem;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .instruction-steps {
+      margin-bottom: 2rem;
+    }
+
+    .instruction-steps h3 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .instruction-steps ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .instruction-steps li {
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+
+    .instruction-steps a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .instruction-steps a:hover {
+      text-decoration: underline;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.85rem 1.2rem;
+      padding-right: 3rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91, 104, 255, 0.2);
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 1rem;
+      top: 2.4rem;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .api-key-note {
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+
+    .api-key-note i {
+      margin-right: 0.5rem;
+      color: var(--info);
+    }
+
+    .modal-footer {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .api-key-settings {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .api-key-settings:hover {
+      background: var(--primary);
+      color: white;
+      transform: rotate(30deg);
+    }
+
+    /* Notification styles */
+    .notification {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      z-index: 1010;
+    }
+    .notification.show {
+      transform: translateX(0);
+    }
+    .notification i {
+      margin-right: 0.5rem;
+      font-size: 1rem;
+    }
+    .notification.success {
+      background-color: #28a745;
+    }
+    .notification.error {
+      background-color: #dc3545;
+    }
+    
     @keyframes spin {
       to {
         transform: rotate(360deg);
@@ -923,6 +1119,17 @@
       .word-pair {
         min-width: 60px;
       }
+      .modal-content {
+        width: 95%;
+      }
+      
+      .modal-header, .modal-body, .modal-footer {
+        padding: 1rem;
+      }
+      
+      .instruction-steps ol {
+        padding-left: 1.2rem;
+      }
     }
   </style>
 </head>
@@ -948,7 +1155,7 @@
         <i class="fas fa-info-circle"></i>
       </div>
       <div class="info-content">
-        <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making language acquisition more natural and effective.</p>
+        <p>The Birkenbihl method helps you learn languages by first understanding exactly what each word means in your native language. This "decoding" phase creates strong neural connections, making language learning more intuitive and effective.</p>
       </div>
     </div>
     <div class="controls-container">
@@ -967,250 +1174,367 @@
             <option value="pt">Portuguese</option>
             <option value="hi">Hindi</option>
             <option value="ko">Korean</option>
-            <option value="tr">Turkish</option>
-            <option value="nl">Dutch</option>
-            <option value="pl">Polish</option>
-            <option value="sv">Swedish</option>
-            <option value="vi">Vietnamese</option>
-            <option value="th">Thai</option>
-            <option value="el">Greek</option>
-            <option value="cs">Czech</option>
-            <option value="ro">Romanian</option>
-            <option value="hu">Hungarian</option>
-            <option value="fi">Finnish</option>
-            <option value="da">Danish</option>
-            <option value="bg">Bulgarian</option>
-            <option value="sk">Slovak</option>
-            <option value="lt">Lithuanian</option>
-            <option value="sl">Slovenian</option>
-            <option value="lv">Latvian</option>
-            <option value="et">Estonian</option>
-            <option value="hr">Croatian</option>
-            <option value="sr">Serbian</option>
-            <option value="ukr">Ukrainian</option>
-            <option value="he">Hebrew</option>
-            <option value="id">Indonesian</option>
-            <option value="ms">Malay</option>
-            <option value="fil">Filipino</option>
-            <option value="sw">Swahili</option>
-            <option value="af">Afrikaans</option>
-            <option value="sq">Albanian</option>
           </select>
         </div>
         <div class="language-selector">
-          <label for="target-lang"><i class="fas fa-user"></i> Your language:</label>
-          <select id="target-lang">
+          <label for="target-lang"><i class="fas fa-language"></i> Your language:</label>
+          <select id="target-lang" disabled>
             <option value="en">English</option>
-            <option value="fr">French</option>
-            <option value="es">Spanish</option>
-            <option value="de">German</option>
-            <option value="it">Italian</option>
-            <option value="ja">Japanese</option>
-            <option value="ru">Russian</option>
-            <option value="zh">Chinese</option>
-            <option value="ar">Arabic</option>
-            <option value="pt">Portuguese</option>
-            <option value="hi">Hindi</option>
-            <option value="ko">Korean</option>
-            <option value="tr">Turkish</option>
-            <option value="nl">Dutch</option>
-            <option value="pl">Polish</option>
-            <option value="sv">Swedish</option>
-            <option value="vi">Vietnamese</option>
-            <option value="th">Thai</option>
-            <option value="el">Greek</option>
-            <option value="cs">Czech</option>
-            <option value="ro">Romanian</option>
-            <option value="hu">Hungarian</option>
-            <option value="fi">Finnish</option>
-            <option value="da">Danish</option>
-            <option value="bg">Bulgarian</option>
-            <option value="sk">Slovak</option>
-            <option value="lt">Lithuanian</option>
-            <option value="sl">Slovenian</option>
-            <option value="lv">Latvian</option>
-            <option value="et">Estonian</option>
-            <option value="hr">Croatian</option>
-            <option value="sr">Serbian</option>
-            <option value="ukr">Ukrainian</option>
-            <option value="he">Hebrew</option>
-            <option value="id">Indonesian</option>
-            <option value="ms">Malay</option>
-            <option value="fil">Filipino</option>
-            <option value="sw">Swahili</option>
-            <option value="af">Afrikaans</option>
-            <option value="sq">Albanian</option>
           </select>
         </div>
       </div>
-      
-      <div class="quick-actions">
-        <button class="action-btn" id="swap-languages">
-          <i class="fas fa-exchange-alt"></i> Swap Languages
-        </button>
-        <button class="action-btn" id="clear-text">
-          <i class="fas fa-trash-alt"></i> Clear Text
-        </button>
+    </div>
+    <div class="input-area">
+      <div class="textarea-container">
+        <textarea id="input-text" placeholder="Enter text in the foreign language you want to learn..."></textarea>
+        <div class="character-count">0/1000</div>
       </div>
-      <div class="input-area">
-        <div class="textarea-container">
-          <textarea id="source-text" placeholder="Paste your text in a foreign language here..."></textarea>
-          <div class="character-count">0 / 200000</div>
-        </div>
-        
-        <div class="example-texts">
-          <div class="example-text" data-lang="fr">Simple French example</div>
-          <div class="example-text" data-lang="es">Simple Spanish example</div>
-          <div class="example-text" data-lang="de">Simple German example</div>
-          <div class="example-text" data-lang="it">Simple Italian example</div>
-          <div class="example-text" data-lang="zh">简单的中文例子</div>
-          <div class="example-text" data-lang="ja">簡単な日本語の例</div>
-          <div class="example-text" data-lang="ko">간단한 한국어 예시</div>
-        </div>
-        
-        <div class="btn-container">
-          <button id="process-btn" class="primary-button">
-            <i class="fas fa-magic"></i> Process Text
-          </button>
-          <button id="save-btn" class="secondary-button">
-            <i class="fas fa-bookmark"></i> Save Translation
-          </button>
-        </div>
+      <div class="example-texts">
+        <div class="example-text" data-lang="fr">Bonjour, comment allez-vous?</div>
+        <div class="example-text" data-lang="es">Me gustaría aprender español</div>
+        <div class="example-text" data-lang="de">Ich möchte Deutsch lernen</div>
+        <div class="example-text" data-lang="it">La vita è bella</div>
       </div>
-      <div class="output-area" id="results-container">
-        <!-- Results will appear here -->
+      <div class="btn-container">
+        <button id="process-btn" class="primary-button">
+          <i class="fas fa-language"></i> Decode Text
+        </button>
+        <button id="clear-btn" class="secondary-button">
+          <i class="fas fa-trash-alt"></i> Clear
+        </button>
       </div>
     </div>
-    
-    <div class="saved-translations" id="saved-translations">
+    <div id="output-area" class="output-area">
+      <div class="output-header">
+        <div class="output-title">Decoded Translation</div>
+        <div class="output-actions">
+          <button class="output-action" id="copy-all">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+          <button class="output-action" id="download-translations">
+            <i class="fas fa-download"></i> Export
+          </button>
+        </div>
+      </div>
+      <div id="output-content"></div>
+    </div>
+    <div id="saved-translations" class="saved-translations">
       <h2><i class="fas fa-history"></i> Translation History</h2>
-      <div class="saved-list" id="saved-list">
-        <!-- Saved translations will appear here -->
+      <div id="saved-list" class="saved-list"></div>
+    </div>
+  </div>
+  
+  <!-- API Key Modal -->
+  <div id="api-key-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-key"></i> Gemini API Key Required</h2>
+        <p>LinguaLens needs a Gemini API key to translate and analyze text.</p>
+      </div>
+      
+      <div class="modal-body">
+        <div class="instruction-steps">
+          <h3>How to get your free Gemini API key:</h3>
+          <ol>
+            <li>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio</a></li>
+            <li>Sign in with your Google account</li>
+            <li>Click on "Create API key" button</li>
+            <li>Copy your new API key</li>
+            <li>Paste it below</li>
+          </ol>
+        </div>
+        
+        <div class="api-form">
+          <div class="input-group">
+            <label for="gemini-api-key">Your Gemini API Key:</label>
+            <input type="password" id="gemini-api-key" placeholder="Paste your API key here" />
+            <button type="button" id="toggle-key-visibility" class="toggle-visibility">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="api-key-note">
+            <i class="fas fa-info-circle"></i>
+            <span>Your API key is stored only in your browser and never sent to our servers.</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button id="save-api-key" class="primary-button">
+          <i class="fas fa-save"></i> Save API Key
+        </button>
       </div>
     </div>
-    
-    <footer>
-      <p>LinguaLens &copy; 2025 | A better way to learn languages</p>
-      <div class="social-links">
-        <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
-        <a href="#" class="social-link" title="Discord"><i class="fab fa-discord"></i></a>
-      </div>
-    </footer>
   </div>
-
+  
+  <div class="api-key-settings" title="API Key Settings">
+    <i class="fas fa-key"></i>
+  </div>
+  
+  <footer>
+    <p>LinguaLens - Language Learning with the Birkenbihl Method</p>
+    <p>© 2025 LinguaLens</p>
+  </footer>
+  
   <script>
-    // Theme toggle functionality
+    // Character counter
+    const textarea = document.getElementById('input-text');
+    const charCount = document.querySelector('.character-count');
+    
+    textarea.addEventListener('input', function() {
+      charCount.textContent = `${this.value.length}/1000`;
+      if (this.value.length > 1000) {
+        charCount.style.color = 'var(--danger)';
+      } else {
+        charCount.style.color = 'var(--text-light)';
+      }
+    });
+    
+    // Theme toggle
     const themeToggle = document.getElementById('theme-toggle');
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      const icon = themeToggle.querySelector('i');
-      if (document.body.classList.contains('dark-mode')) {
-        icon.classList.remove('fa-moon');
-        icon.classList.add('fa-sun');
-      } else {
-        icon.classList.remove('fa-sun');
-        icon.classList.add('fa-moon');
-      }
+    const body = document.body;
+    
+    // Check if user has a saved preference
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+      body.classList.add('dark-mode');
+      themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    
+    themeToggle.addEventListener('click', function() {
+      body.classList.toggle('dark-mode');
+      const isDark = body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDark);
+      themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
     });
-
-    // Saved translations toggle
-    const savedToggle = document.getElementById('saved-toggle');
-    const savedTranslations = document.getElementById('saved-translations');
-    savedToggle.addEventListener('click', () => {
-      savedTranslations.classList.toggle('visible');
+    
+    // Clear button
+    document.getElementById('clear-btn').addEventListener('click', function() {
+      document.getElementById('input-text').value = '';
+      charCount.textContent = '0/1000';
+      document.getElementById('output-area').classList.remove('visible');
     });
-
-    // Character count
-    const sourceText = document.getElementById('source-text');
-    const characterCount = document.querySelector('.character-count');
-    sourceText.addEventListener('input', () => {
-      const count = sourceText.value.length;
-      characterCount.textContent = `${count} / 200000`;
-      if (count > 200000) {
-        characterCount.style.color = 'var(--danger)';
-        sourceText.value = sourceText.value.substring(0, 200000);
-      } else {
-        characterCount.style.color = 'var(--text-light)';
-      }
-    });
-
-    // Swap languages
-    const swapLanguages = document.getElementById('swap-languages');
-    const sourceLang = document.getElementById('source-lang');
-    const targetLang = document.getElementById('target-lang');
-    swapLanguages.addEventListener('click', () => {
-      const temp = sourceLang.value;
-      sourceLang.value = targetLang.value;
-      targetLang.value = temp;
-    });
-
-    // Clear text
-    const clearText = document.getElementById('clear-text');
-    clearText.addEventListener('click', () => {
-      sourceText.value = '';
-      characterCount.textContent = '0 / 200000';
-    });
-
+    
     // Example texts
     const exampleTexts = document.querySelectorAll('.example-text');
-    const examples = {
-      'fr': 'Je voudrais apprendre le français. C\'est une belle langue.',
-      'es': 'Me gustaría aprender español. Es un idioma muy bonito.',
-      'de': 'Ich möchte Deutsch lernen. Es ist eine schöne Sprache.',
-      'it': 'Vorrei imparare l\'italiano. È una bella lingua.',
-      'zh': '我想学习中文。这是一种美丽的语言。',
-      'ja': '日本語を勉強したいです。とても美しい言語です。',
-      'ko': '저는 한국어를 배우고 싶어요. 아름다운 언어입니다.'
-    };
+    
     exampleTexts.forEach(example => {
-      example.addEventListener('click', () => {
-        const lang = example.dataset.lang;
-        sourceLang.value = lang;
-        sourceText.value = examples[lang] || 'Example text';
-        characterCount.textContent = `${sourceText.value.length} / 200000`;
+      example.addEventListener('click', function() {
+        document.getElementById('input-text').value = this.textContent;
+        document.getElementById('source-lang').value = this.getAttribute('data-lang');
+        charCount.textContent = `${this.textContent.length}/1000`;
       });
     });
-
-    // Process text functionality
-    const processBtn = document.getElementById('process-btn');
-    const resultsContainer = document.getElementById('results-container');
     
-    processBtn.addEventListener('click', processText);
-
+    // Process button
+    document.getElementById('process-btn').addEventListener('click', processText);
+    
+    // History toggle
+    document.getElementById('saved-toggle').addEventListener('click', function() {
+      document.getElementById('saved-translations').classList.toggle('visible');
+      loadHistory();
+    });
+    
+    // Save to history
+    function saveToHistory(text, sourceLang, targetLang) {
+      // Get existing history or initialize new array
+      let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
+      
+      // Add new item
+      history.unshift({
+        id: Date.now(),
+        text: text,
+        sourceLang: sourceLang,
+        targetLang: targetLang,
+        date: new Date().toISOString()
+      });
+      
+      // Limit history to 20 items
+      if (history.length > 20) {
+        history.pop();
+      }
+      
+      // Save updated history
+      localStorage.setItem('translationHistory', JSON.stringify(history));
+    }
+    
+    // Load history
+    function loadHistory() {
+      const savedList = document.getElementById('saved-list');
+      const history = JSON.parse(localStorage.getItem('translationHistory')) || [];
+      
+      if (history.length === 0) {
+        savedList.innerHTML = `
+          <div class="no-saved">
+            <i class="fas fa-history"></i>
+            <p>No translation history yet</p>
+          </div>
+        `;
+        return;
+      }
+      
+      savedList.innerHTML = '';
+      
+      history.forEach(item => {
+        const date = new Date(item.date).toLocaleString();
+        const sourceLang = getLanguageFullName(item.sourceLang);
+        
+        const historyItem = document.createElement('div');
+        historyItem.className = 'saved-item';
+        historyItem.dataset.text = item.text;
+        historyItem.dataset.sourceLang = item.sourceLang;
+        historyItem.dataset.targetLang = item.targetLang;
+        historyItem.innerHTML = `
+          <div class="saved-item-header">
+            <div class="saved-item-lang">${sourceLang}</div>
+            <div class="saved-item-date">${date}</div>
+          </div>
+          <div class="saved-item-text">${item.text}</div>
+        `;
+        
+        historyItem.addEventListener('click', function() {
+          document.getElementById('input-text').value = this.dataset.text;
+          document.getElementById('source-lang').value = this.dataset.sourceLang;
+          charCount.textContent = `${this.dataset.text.length}/1000`;
+          document.getElementById('saved-translations').classList.remove('visible');
+          processText();
+        });
+        
+        savedList.appendChild(historyItem);
+      });
+    }
+    
+    function getLanguageFullName(code) {
+      const languages = {
+        'en': 'English',
+        'fr': 'French',
+        'es': 'Spanish',
+        'de': 'German',
+        'it': 'Italian',
+        'ja': 'Japanese',
+        'ru': 'Russian',
+        'zh': 'Chinese',
+        'ar': 'Arabic',
+        'pt': 'Portuguese',
+        'hi': 'Hindi',
+        'ko': 'Korean'
+      };
+      
+      return languages[code] || code;
+    }
+    
+    // API key management
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if API key exists in localStorage
+      const apiKey = localStorage.getItem('geminiApiKey');
+      const apiKeyModal = document.getElementById('api-key-modal');
+      
+      // Show modal if no API key is saved
+      if (!apiKey) {
+        apiKeyModal.classList.add('active');
+      }
+      
+      // Toggle password visibility
+      const toggleKeyVisibility = document.getElementById('toggle-key-visibility');
+      const apiKeyInput = document.getElementById('gemini-api-key');
+      
+      toggleKeyVisibility.addEventListener('click', function() {
+        const type = apiKeyInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        apiKeyInput.setAttribute('type', type);
+        toggleKeyVisibility.innerHTML = type === 'password' ? 
+          '<i class="fas fa-eye"></i>' : 
+          '<i class="fas fa-eye-slash"></i>';
+      });
+      
+      // Save API key
+      const saveApiKeyBtn = document.getElementById('save-api-key');
+      
+      saveApiKeyBtn.addEventListener('click', function() {
+        const newApiKey = apiKeyInput.value.trim();
+        
+        if (newApiKey) {
+          localStorage.setItem('geminiApiKey', newApiKey);
+          apiKeyModal.classList.remove('active');
+          showNotification('API key saved successfully!', 'success');
+        } else {
+          showNotification('Please enter a valid API key', 'error');
+        }
+      });
+      
+      // API key settings button event
+      document.querySelector('.api-key-settings').addEventListener('click', function() {
+        // If API key exists, pre-fill the input
+        if (apiKey) {
+          apiKeyInput.value = apiKey;
+        }
+        apiKeyModal.classList.add('active');
+      });
+    });
+    
+    // Notification system
+    function showNotification(message, type) {
+      // Remove any existing notifications
+      const existingNotifications = document.querySelectorAll('.notification');
+      existingNotifications.forEach(notification => {
+        document.body.removeChild(notification);
+      });
+      
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+    
+    // Process text function with API key handling
     function processText() {
-      const text = sourceText.value.trim();
-      if (!text) {
-        alert('Please enter some text to process.');
+      const text = document.getElementById('input-text').value;
+      if (!text.trim()) {
+        showNotification('Please enter some text to process', 'error');
         return;
       }
 
-      // Display loading state
-      resultsContainer.innerHTML = `
+      const sourceLang = document.getElementById('source-lang').value;
+      const targetLang = document.getElementById('target-lang').value || 'en';
+      
+      // Get the API key from localStorage
+      const apiKey = localStorage.getItem('geminiApiKey');
+      
+      // Check if API key exists
+      if (!apiKey) {
+        document.getElementById('api-key-modal').classList.add('active');
+        showNotification('Please set your API key first', 'error');
+        return;
+      }
+      
+      // Show loading state
+      document.getElementById('output-area').classList.add('visible');
+      document.getElementById('output-content').innerHTML = `
         <div class="loading">
           <div class="spinner"></div>
           <div class="loading-text">Processing your text...</div>
           <div class="processing-steps">
-            <div class="processing-step" id="step1">
-              <i class="fas fa-circle-notch fa-spin"></i> Analyzing text structure
-            </div>
-            <div class="processing-step" id="step2">
-              <i class="fas fa-circle-notch fa-spin"></i> Creating word-by-word translation
-            </div>
-            <div class="processing-step" id="step3">
-              <i class="fas fa-circle-notch fa-spin"></i> Generating fluent translation
-            </div>
+            <div class="processing-step"><i class="fas fa-circle-notch fa-spin"></i> Analyzing text structure</div>
+            <div class="processing-step"><i class="fas fa-circle-notch fa-spin"></i> Breaking down into sentences</div>
+            <div class="processing-step"><i class="fas fa-circle-notch fa-spin"></i> Translating word-by-word</div>
           </div>
         </div>
       `;
-      resultsContainer.classList.add('visible');
-
-      // Simulate step completion
-      setTimeout(() => document.getElementById('step1').classList.add('completed'), 1000);
-      setTimeout(() => document.getElementById('step2').classList.add('completed'), 3000);
-      setTimeout(() => document.getElementById('step3').classList.add('completed'), 4500);
-
-      // Send request to backend
+      
+      // Save to history
+      saveToHistory(text, sourceLang, targetLang);
+      
+      // Send request to server with API key
       fetch('/process', {
         method: 'POST',
         headers: {
@@ -1218,8 +1542,9 @@
         },
         body: JSON.stringify({
           text: text,
-          sourceLang: sourceLang.value,
-          targetLang: targetLang.value
+          sourceLang: sourceLang,
+          targetLang: targetLang,
+          apiKey: apiKey // Send the API key with the request
         }),
       })
       .then(response => {
@@ -1227,413 +1552,329 @@
         const decoder = new TextDecoder();
         let buffer = '';
         
-        // Create result container
-        resultsContainer.innerHTML = `
-          <div class="output-header">
-            <h2 class="output-title">Translation Results</h2>
-            <div class="output-actions">
-              <button class="output-action" id="copy-all">
-                <i class="fas fa-copy"></i> Copy All
-              </button>
-              <button class="output-action" id="download-results">
-                <i class="fas fa-download"></i> Download
-              </button>
-              <div class="display-toggle">
-                <label>Display:</label>
-                <div class="toggle-btn">
-                  <div class="toggle-option active" id="toggle-aligned">Aligned</div>
-                  <div class="toggle-option" id="toggle-inline">Inline</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="sentences-container"></div>
-        `;
+        // For real-time updating as responses come in
+        document.getElementById('output-content').innerHTML = '';
         
-        // Setup display toggle functionality
-        setupDisplayToggle();
-        
-        // Setup stream reading
-        function processStream() {
-          return reader.read().then(({ done, value }) => {
+        function read() {
+          return reader.read().then(({ value, done }) => {
             if (done) {
+              // Process any remaining data in buffer
               if (buffer) {
                 try {
                   const result = JSON.parse(buffer);
-                  addSentenceToResults(result);
+                  appendTranslation(result);
                 } catch (e) {
-                  console.error('Error parsing JSON:', e);
+                  console.error('Error parsing final chunk:', e);
                 }
               }
               return;
             }
             
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
+            const chunk = decoder.decode(value, { stream: true });
+            buffer += chunk;
             
-            buffer = lines.pop(); // Keep the incomplete line in the buffer
-            
-            lines.forEach(line => {
-              if (line.trim()) {
-                try {
+            // Process complete JSON objects in the buffer
+            let newlineIndex;
+            while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+              const line = buffer.substring(0, newlineIndex);
+              buffer = buffer.substring(newlineIndex + 1);
+              
+              try {
+                if (line.trim()) {
                   const result = JSON.parse(line);
-                  addSentenceToResults(result);
-                } catch (e) {
-                  console.error('Error parsing JSON:', e);
+                  appendTranslation(result);
+                  
+                  // Update processing steps to show progress
+                  document.querySelector('.processing-step:nth-child(1)').classList.add('completed');
+                  document.querySelector('.processing-step:nth-child(1) i').className = 'fas fa-check';
+                  document.querySelector('.processing-step:nth-child(2)').classList.add('completed');
+                  document.querySelector('.processing-step:nth-child(2) i').className = 'fas fa-check';
                 }
+              } catch (e) {
+                console.error('Error parsing chunk:', e);
               }
-            });
+            }
             
-            return processStream();
+            return read();
           });
         }
         
-        processStream();
+        read().catch(error => {
+          document.getElementById('output-content').innerHTML = `
+            <div class="error">
+              <i class="fas fa-exclamation-triangle"></i>
+              <h3>Oops! Something went wrong.</h3>
+              <p>${error.message}</p>
+              <button class="retry-btn" onclick="processText()"><i class="fas fa-redo"></i> Try Again</button>
+            </div>
+          `;
+        });
       })
       .catch(error => {
-        console.error('Error:', error);
-        resultsContainer.innerHTML = `
+        document.getElementById('output-content').innerHTML = `
           <div class="error">
             <i class="fas fa-exclamation-triangle"></i>
             <h3>Oops! Something went wrong.</h3>
-            <p>${error.message || 'There was an error processing your text. Please try again.'}</p>
-            <button class="retry-btn" onclick="processText()">
-              <i class="fas fa-redo"></i> Try Again
-            </button>
+            <p>${error.message}</p>
+            <button class="retry-btn" onclick="processText()"><i class="fas fa-redo"></i> Try Again</button>
           </div>
         `;
       });
     }
     
-    // Function to set up display toggle functionality
-// Function to set up display toggle functionality
-function setupDisplayToggle() {
-  const toggleAligned = document.getElementById('toggle-aligned');
-  const toggleInline = document.getElementById('toggle-inline');
-
-  toggleAligned.addEventListener('click', () => {
-    toggleAligned.classList.add('active');
-    toggleInline.classList.remove('active');
-    document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'flex');
-    document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'none');
-    // Hide the original sentence in Aligned mode
-    document.querySelectorAll('.original').forEach(el => el.style.display = 'none');
-  });
-
-  toggleInline.addEventListener('click', () => {
-    toggleInline.classList.add('active');
-    toggleAligned.classList.remove('active');
-    document.querySelectorAll('.aligned-translation').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.word-mapping').forEach(el => el.style.display = 'block');
-    // Show the original sentence in Inline mode
-    document.querySelectorAll('.original').forEach(el => el.style.display = 'block');
-  });
-}
-
-    // Add a sentence to results
-    let sentenceCounter = 0;
-    
-    function addSentenceToResults(result) {
-      const sentencesContainer = document.getElementById('sentences-container');
-      sentenceCounter++;
+    // Append a new translation result to the output area
+    function appendTranslation(result) {
+      // Remove loading indicator if it's the first result
+      const loadingElement = document.querySelector('.loading');
+      if (loadingElement) {
+        loadingElement.remove();
+      }
       
-      // Create sentence block
+      const outputContent = document.getElementById('output-content');
       const sentenceBlock = document.createElement('div');
       sentenceBlock.className = 'sentence-block';
       
-      // Create header with sentence number
-      const sentenceHeader = document.createElement('div');
-      sentenceHeader.className = 'sentence-header';
-      sentenceHeader.innerHTML = `<span class="sentence-number">Sentence ${sentenceCounter}</span>`;
-      
-      // Create original text
-      const original = document.createElement('div');
-      original.className = 'original';
-      original.textContent = result.original;
-      
-      // Create aligned word-by-word translation (NEW)
-      const alignedTranslation = document.createElement('div');
-      alignedTranslation.className = 'aligned-translation';
-      
-      // Split original text and wordByWord translation into words
-      const originalWords = result.original.split(/\s+/);
-      const translationWords = result.wordByWord.split(/\s+/);
-      
-      // For each word, create a word pair with original and translation vertically aligned
-      for (let i = 0; i < Math.max(originalWords.length, translationWords.length); i++) {
-        if (originalWords[i]) {
-          const wordPair = document.createElement('div');
-          wordPair.className = 'word-pair';
-          
-          const originalWord = document.createElement('div');
-          originalWord.className = 'original-word';
-          // Remove punctuation when looking up in wordTranslations
-          const cleanWord = originalWords[i].replace(/[.,!?;:"'-]/g, '');
-          originalWord.textContent = originalWords[i];
-          
-          const divider = document.createElement('div');
-          divider.className = 'word-pair-divider';
-          
-          const translationWord = document.createElement('div');
-          translationWord.className = 'translation-word';
-          translationWord.textContent = translationWords[i] || '';
-          
-          // Set tooltip with exact translation if available in wordTranslations
-          if (result.wordTranslations && result.wordTranslations[cleanWord]) {
-            const tooltip = document.createElement('span');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = result.wordTranslations[cleanWord];
-            originalWord.appendChild(tooltip);
-          }
-          
-          wordPair.appendChild(originalWord);
-          wordPair.appendChild(divider);
-          wordPair.appendChild(translationWord);
-          alignedTranslation.appendChild(wordPair);
-        }
-      }
-      
-      // Create traditional word-by-word mapping (for toggle option)
-      const wordMapping = document.createElement('div');
-      wordMapping.className = 'word-mapping';
-      wordMapping.style.display = 'none'; // Hidden by default, aligned view is default
-      wordMapping.textContent = result.wordByWord;
-      
-      // Create fluent translation
-      const translation = document.createElement('div');
-      translation.className = 'translation';
-      translation.textContent = result.fluentTranslation;
-      
-      // Add romanization if available (for languages like Chinese, Japanese, Korean)
-      let romanization = '';
-      if (result.romanization) {
-        romanization = `
-          <div class="romanization">
-            ${result.romanization}
+      // Check if we have an error
+      if (result.error) {
+        sentenceBlock.innerHTML = `
+          <div class="error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Error processing sentence</h3>
+            <p>${result.error}</p>
           </div>
         `;
+        outputContent.appendChild(sentenceBlock);
+        return;
       }
       
-      // Create grammar explanation button and container
-      const grammarBtn = document.createElement('button');
-      grammarBtn.className = 'grammar-btn';
-      grammarBtn.innerHTML = '<i class="fas fa-book"></i>';
-      grammarBtn.title = 'Show grammar explanation';
+      // Get sentence number
+      const sentenceNumber = outputContent.children.length + 1;
       
-      const grammarExplanation = document.createElement('div');
-      grammarExplanation.className = 'grammar-explanation';
-      grammarExplanation.id = `grammar-${sentenceCounter}`;
-      grammarExplanation.innerHTML = `
+      // Create HTML for the block
+      let romanizationHtml = '';
+      if (result.romanization) {
+        romanizationHtml = `<div class="romanization">${result.romanization}</div>`;
+      }
+      
+      sentenceBlock.innerHTML = `
+        <div class="sentence-header">
+          <div class="sentence-number">Sentence ${sentenceNumber}</div>
+          <div class="display-toggle">
+            <label>Display:</label>
+            <div class="toggle-btn">
+              <div class="toggle-option active" data-mode="traditional">Text</div>
+              <div class="toggle-option" data-mode="aligned">Aligned</div>
+            </div>
+          </div>
+        </div>
+        <div class="original">${result.original}</div>
+        ${romanizationHtml}
+        <div class="traditional-view">
+          <div class="word-mapping">${result.wordByWord}</div>
+          <div class="translation">${result.fluentTranslation}</div>
+        </div>
+        <div class="aligned-view" style="display: none;">
+          <div class="aligned-translation">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
+        <button class="grammar-btn" title="Grammar explanation">
+          <i class="fas fa-book"></i>
+        </button>
+        <button class="speak-btn" title="Listen">
+          <i class="fas fa-volume-up"></i>
+        </button>
+      `;
+      
+      outputContent.appendChild(sentenceBlock);
+      
+      // Set up the aligned view
+      const alignedContainer = sentenceBlock.querySelector('.aligned-translation');
+      const originalWords = result.original.split(/\s+/);
+      const translatedWords = result.wordByWord.split(/\s+/);
+      
+      // Make sure we have the same number of words
+      const minLength = Math.min(originalWords.length, translatedWords.length);
+      
+      for (let i = 0; i < minLength; i++) {
+        const wordPair = document.createElement('div');
+        wordPair.className = 'word-pair';
+        wordPair.innerHTML = `
+          <div class="original-word">${originalWords[i]}</div>
+          <div class="word-pair-divider"></div>
+          <div class="translation-word">${translatedWords[i]}</div>
+        `;
+        alignedContainer.appendChild(wordPair);
+      }
+      
+      // Set up display toggle
+      sentenceBlock.querySelector('.toggle-btn').addEventListener('click', function(e) {
+        if (e.target.classList.contains('toggle-option')) {
+          // Update active state
+          sentenceBlock.querySelectorAll('.toggle-option').forEach(option => {
+            option.classList.remove('active');
+          });
+          e.target.classList.add('active');
+          
+          // Show/hide views
+          const mode = e.target.dataset.mode;
+          if (mode === 'traditional') {
+            sentenceBlock.querySelector('.traditional-view').style.display = 'block';
+            sentenceBlock.querySelector('.aligned-view').style.display = 'none';
+          } else {
+            sentenceBlock.querySelector('.traditional-view').style.display = 'none';
+            sentenceBlock.querySelector('.aligned-view').style.display = 'block';
+          }
+        }
+      });
+      
+      // Set up text-to-speech
+      const speakButton = sentenceBlock.querySelector('.speak-btn');
+      speakButton.addEventListener('click', function() {
+        const text = result.original;
+        speak(text, document.getElementById('source-lang').value);
+      });
+      
+      // Set up grammar explanation
+      const grammarButton = sentenceBlock.querySelector('.grammar-btn');
+      grammarButton.addEventListener('click', function() {
+        const existingExplanation = sentenceBlock.nextElementSibling;
+        if (existingExplanation && existingExplanation.classList.contains('grammar-explanation')) {
+          existingExplanation.remove();
+          return;
+        }
+        
+        getGrammarExplanation(result.original, document.getElementById('source-lang').value, this);
+      });
+    }
+    
+    // Grammar explanation function with API key handling
+    function getGrammarExplanation(sentence, sourceLang, grammarButton) {
+      // Get API key
+      const apiKey = localStorage.getItem('geminiApiKey');
+      
+      if (!apiKey) {
+        document.getElementById('api-key-modal').classList.add('active');
+        showNotification('Please set your API key first', 'error');
+        return;
+      }
+      
+      // Show loading state in the grammar explanation area
+      const explanationId = `grammar-explanation-${Date.now()}`;
+      const explanationContainer = document.createElement('div');
+      explanationContainer.className = 'grammar-explanation visible';
+      explanationContainer.id = explanationId;
+      explanationContainer.innerHTML = `
         <div class="grammar-loading">
-          <i class="fas fa-circle-notch fa-spin"></i> Loading grammar explanation...
+          <i class="fas fa-circle-notch fa-spin"></i> Generating grammar explanation...
         </div>
       `;
       
-      // Create speak button
-      const speakBtn = document.createElement('button');
-      speakBtn.className = 'speak-btn';
-      speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-      speakBtn.title = 'Listen to pronunciation';
-
-      // Add hover event for automatic speech on hover
-      let utterance = null;
-  sentenceBlock.addEventListener('mouseenter', () => {
-    // Stop any ongoing speech
-    speechSynthesis.cancel();
-    
-    // Create new utterance
-    utterance = new SpeechSynthesisUtterance(result.original);
-    utterance.lang = getLanguageCode(sourceLang.value);
-    speechSynthesis.speak(utterance);
-  });
-  
-  sentenceBlock.addEventListener('mouseleave', () => {
-    // Stop speech when cursor leaves
-    speechSynthesis.cancel();
-    utterance = null;
-  });
+      // Insert after the button's parent element (sentence-block)
+      const sentenceBlock = grammarButton.closest('.sentence-block');
+      sentenceBlock.insertAdjacentElement('afterend', explanationContainer);
       
-      // Add event listener for grammar button
-      grammarBtn.addEventListener('click', function() {
-        const explanationDiv = document.getElementById(`grammar-${sentenceCounter}`);
-        explanationDiv.classList.toggle('visible');
-        
-        // If it's the first time showing, fetch grammar explanation
-        if (explanationDiv.querySelector('.grammar-loading')) {
-          fetch('/grammar-explanation', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              sentence: result.original,
-              sourceLang: sourceLang.value,
-              targetLang: targetLang.value
-            }),
-          })
-          .then(response => response.json())
-          .then(data => {
-            let html = `<div class="grammar-title"><i class="fas fa-book"></i> Grammar Breakdown</div>`;
-            
-            if (data.points && data.points.length > 0) {
-              data.points.forEach(point => {
-                // Replace ** with grammar-highlight class
-                const formattedPoint = point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
-                html += `<div class="grammar-point">${formattedPoint}</div>`;
-              });
-            } else {
-              html = `<div class="grammar-title"><i class="fas fa-info-circle"></i> Note</div>
-                     <div class="grammar-point">No specific grammar points to highlight in this simple sentence.</div>`;
-            }
-            
-            explanationDiv.innerHTML = html;
-          })
-          .catch(error => {
-            explanationDiv.innerHTML = `
-              <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
-              <div class="grammar-point">Could not load grammar explanation. Please try again.</div>
-            `;
-          });
+      // Send request to server with the API key
+      fetch('/grammar-explanation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sentence: sentence,
+          sourceLang: sourceLang,
+          targetLang: 'en', // Assuming target language is English
+          apiKey: apiKey // Send the API key with the request
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById(explanationId).innerHTML = `
+            <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
+            <p>Unable to generate grammar explanation: ${data.error}</p>
+          `;
+          return;
         }
+        
+        let pointsHtml = '';
+        
+        if (data.points && data.points.length) {
+          data.points.forEach(point => {
+            // Replace **text** with <span class="grammar-highlight">text</span>
+            const highlightedPoint = point.replace(/\*\*(.*?)\*\*/g, '<span class="grammar-highlight">$1</span>');
+            pointsHtml += `<div class="grammar-point">${highlightedPoint}</div>`;
+          });
+        } else {
+          pointsHtml = '<p>No grammar points found for this sentence.</p>';
+        }
+        
+        document.getElementById(explanationId).innerHTML = `
+          <div class="grammar-title"><i class="fas fa-book"></i> Grammar Explanation</div>
+          ${pointsHtml}
+        `;
+      })
+      .catch(error => {
+        document.getElementById(explanationId).innerHTML = `
+          <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
+          <p>Unable to generate grammar explanation: ${error.message}</p>
+        `;
       });
-      
-      // Add event listener for speak button
-      speakBtn.addEventListener('click', function() {
-        const utterance = new SpeechSynthesisUtterance(result.original);
-        utterance.lang = getLanguageCode(sourceLang.value);
-        speechSynthesis.speak(utterance);
-      });
-      
-      // Assemble sentence block
-      sentenceBlock.appendChild(sentenceHeader);
-      sentenceBlock.appendChild(original);
-      sentenceBlock.appendChild(alignedTranslation);
-      sentenceBlock.appendChild(wordMapping);
-      if (romanization) {
-        const romanizationDiv = document.createElement('div');
-        romanizationDiv.className = 'romanization';
-        romanizationDiv.textContent = result.romanization;
-        sentenceBlock.appendChild(romanizationDiv);
-      }
-      sentenceBlock.appendChild(translation);
-      sentenceBlock.appendChild(grammarExplanation);
-      sentenceBlock.appendChild(grammarBtn);
-      sentenceBlock.appendChild(speakBtn);
-      
-      // Add the sentence block to the container
-      sentencesContainer.appendChild(sentenceBlock);
     }
     
-    // Helper function to get full language code for speech synthesis
-    function getLanguageCode(code) {
-      const langMap = {
-        'en': 'en-US',
-        'fr': 'fr-FR',
-        'es': 'es-ES',
-        'de': 'de-DE',
-        'it': 'it-IT',
-        'ja': 'ja-JP',
-        'ru': 'ru-RU',
-        'zh': 'zh-CN',
-        'ar': 'ar-SA',
-        'pt': 'pt-BR',
-        'hi': 'hi-IN',
-        'ko': 'ko-KR'
-      };
-      return langMap[code] || code;
+    // Text-to-speech function
+    function speak(text, lang) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      window.speechSynthesis.speak(utterance);
     }
     
-    // Save translation functionality
-    const saveBtn = document.getElementById('save-btn');
-    saveBtn.addEventListener('click', () => {
-      const text = sourceText.value.trim();
-      if (!text) {
-        alert('No text to save.');
-        return;
-      }
+    // Copy all translated content
+    document.getElementById('copy-all').addEventListener('click', function() {
+      let content = '';
       
-      // Get existing saved translations
-      let savedItems = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
-      
-      // Add new translation
-      savedItems.unshift({
-        text: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
-        sourceLang: sourceLang.value,
-        targetLang: targetLang.value,
-        date: new Date().toLocaleString(),
-        fullText: text
+      const sentences = document.querySelectorAll('.sentence-block');
+      sentences.forEach(sentence => {
+        const original = sentence.querySelector('.original').textContent;
+        const wordByWord = sentence.querySelector('.word-mapping').textContent;
+        const translation = sentence.querySelector('.translation').textContent;
+        
+        content += `${original}\n${wordByWord}\n${translation}\n\n`;
       });
       
-      // Keep only the most recent 10 items
-      if (savedItems.length > 10) {
-        savedItems = savedItems.slice(0, 10);
-      }
-      
-      // Save to localStorage
-      localStorage.setItem('savedTranslations', JSON.stringify(savedItems));
-      
-      // Update the UI
-      updateSavedTranslations();
-      
-      // Show confirmation
-      alert('Translation saved!');
+      navigator.clipboard.writeText(content).then(
+        function() {
+          showNotification('Copied to clipboard!', 'success');
+        }, 
+        function(err) {
+          showNotification('Could not copy text: ' + err, 'error');
+        }
+      );
     });
     
-    // Update saved translations list
-    function updateSavedTranslations() {
-      const savedList = document.getElementById('saved-list');
-      const savedItems = JSON.parse(localStorage.getItem('savedTranslations') || '[]');
+    // Download translations as text file
+    document.getElementById('download-translations').addEventListener('click', function() {
+      let content = '';
       
-      if (savedItems.length === 0) {
-        savedList.innerHTML = `
-          <div class="no-saved">
-            <i class="fas fa-history"></i>
-            <p>No saved translations yet</p>
-          </div>
-        `;
-        return;
-      }
-      
-      
-      // Add click event to load saved translation
-      document.querySelectorAll('.saved-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const index = item.dataset.index;
-          const savedItem = savedItems[index];
-          
-          sourceLang.value = savedItem.sourceLang;
-          targetLang.value = savedItem.targetLang;
-          sourceText.value = savedItem.fullText;
-          characterCount.textContent = `${sourceText.value.length} / 200000`;
-          
-          // Hide saved translations panel
-          savedTranslations.classList.remove('visible');
-          
-          // Process the text automatically
-          processText();
-        });
+      const sentences = document.querySelectorAll('.sentence-block');
+      sentences.forEach(sentence => {
+        const original = sentence.querySelector('.original').textContent;
+        const wordByWord = sentence.querySelector('.word-mapping').textContent;
+        const translation = sentence.querySelector('.translation').textContent;
+        
+        content += `${original}\n${wordByWord}\n${translation}\n\n`;
       });
-    }
-    
-    // Helper function to get language name
-    function getLanguageName(code) {
-      const langNames = {
-        'en': 'English', 'fr': 'French', 'es': 'Spanish', 'de': 'German',
-        'it': 'Italian', 'ja': 'Japanese', 'ru': 'Russian', 'zh': 'Chinese',
-        'ar': 'Arabic', 'pt': 'Portuguese', 'hi': 'Hindi', 'ko': 'Korean'
-      };
-      return langNames[code] || code.toUpperCase();
-    }
-    
-    // Initialize saved translations
-    updateSavedTranslations();
-    
-    // Check for dark mode preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.body.classList.add('dark-mode');
-      themeToggle.querySelector('i').classList.remove('fa-moon');
-      themeToggle.querySelector('i').classList.add('fa-sun');
-    }
+      
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'lingualens_translation.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
   </script>
 </body>
 </html>
