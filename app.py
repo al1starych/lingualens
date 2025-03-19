@@ -7,10 +7,6 @@ import time
 
 app = Flask(__name__)
 
-# Configure the Gemini API
-genai.configure(api_key="AIzaSyAwaGJum3kiEysiE0W9qagzMvATW43dWn0")  # Replace with your actual API key
-model = genai.GenerativeModel("gemini-2.0-flash")
-
 @app.route('/')
 def index():
     return send_file('index.html')
@@ -22,6 +18,15 @@ def process_text():
     if not data or 'text' not in data:
         return jsonify({'error': 'No text provided'}), 400
     
+    # Get API key from request
+    api_key = data.get('apiKey')
+    if not api_key:
+        return jsonify({'error': 'API key is required'}), 400
+    
+    # Configure the Gemini API with the user's API key
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-2.0-flash")
+    
     text = data['text']
     source_lang = data.get('sourceLang', 'fr')
     target_lang = data.get('targetLang', 'en')
@@ -30,7 +35,7 @@ def process_text():
     def generate():
         for sentence in sentences:
             if sentence.strip():
-                result = process_sentence(sentence, source_lang, target_lang)
+                result = process_sentence(sentence, source_lang, target_lang, model)
                 yield json.dumps(result) + '\n'
                 time.sleep(4)  # Add a delay to avoid hitting API rate limits
     
@@ -44,14 +49,23 @@ def get_grammar_explanation():
     if not data or 'sentence' not in data:
         return jsonify({'error': 'No sentence provided'}), 400
     
+    # Get API key from request
+    api_key = data.get('apiKey')
+    if not api_key:
+        return jsonify({'error': 'API key is required'}), 400
+    
+    # Configure the Gemini API with the user's API key
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-2.0-flash")
+    
     sentence = data['sentence']
     source_lang = data.get('sourceLang', 'fr')
     target_lang = data.get('targetLang', 'en')
     
-    explanation = generate_grammar_explanation(sentence, source_lang, target_lang)
+    explanation = generate_grammar_explanation(sentence, source_lang, target_lang, model)
     return jsonify(explanation)
 
-def generate_grammar_explanation(sentence, source_lang, target_lang):
+def generate_grammar_explanation(sentence, source_lang, target_lang, model):
     prompt = f"""
     Analyze the grammar of this {get_language_name(source_lang)} sentence for a {get_language_name(target_lang)} speaker:
     
@@ -96,41 +110,7 @@ def generate_grammar_explanation(sentence, source_lang, target_lang):
             "error": f"Error: {e}"
         }
 
-# Updated function to properly handle different languages' sentence structures
-def split_into_sentences(text, language=None):
-    # Define language-specific sentence ending patterns
-    east_asian_langs = ['zh', 'ja', 'ko']
-    
-    if language in east_asian_langs:
-        # Chinese/Japanese/Korean sentence endings - includes both full-width and half-width punctuation
-        # 。- Chinese/Japanese period, ！- exclamation, ？- question mark, 
-        # ；- semicolon, ．- full-width period, etc.
-        pattern = r'(?<=[。！？…．；\!\?\.])+'
-    else:
-        # Western language sentence endings - requires space after punctuation
-        pattern = r'(?<=[.!?])\s+'
-    
-    # Split the text using the appropriate pattern
-    sentences = re.split(pattern, text)
-    
-    # Handle case of very long text with no proper sentence endings
-    result = []
-    for sentence in sentences:
-        if len(sentence) > 200:  # If sentence is too long, try to break it further
-            # Use commas, semicolons, or line breaks as secondary breaking points
-            subsents = re.split(r'(?<=[,;，；])\s*', sentence)
-            result.extend([s for s in subsents if s.strip()])
-        else:
-            if sentence.strip():
-                result.append(sentence)
-    
-    return result
-
-import difflib
-import re
-import json
-
-def process_sentence(sentence, source_lang, target_lang):
+def process_sentence(sentence, source_lang, target_lang, model):
     # Check if romanization is needed (for Chinese, Japanese, Korean)
     needs_romanization = source_lang in ['zh', 'ja', 'ko']
     
@@ -237,17 +217,34 @@ def process_sentence(sentence, source_lang, target_lang):
             result["romanization"] = "Romanization unavailable"
         return result
 
-    except Exception as e:
-        print(f"Error processing sentence: {e}")
-        result = {
-            "original": sentence,
-            "wordByWord": "Error processing translation",
-            "fluentTranslation": "Error processing translation",
-            "wordTranslations": {}
-        }
-        if needs_romanization:
-            result["romanization"] = "Romanization unavailable"
-        return result
+def split_into_sentences(text, language=None):
+    # Define language-specific sentence ending patterns
+    east_asian_langs = ['zh', 'ja', 'ko']
+    
+    if language in east_asian_langs:
+        # Chinese/Japanese/Korean sentence endings - includes both full-width and half-width punctuation
+        # 。- Chinese/Japanese period, ！- exclamation, ？- question mark, 
+        # ；- semicolon, ．- full-width period, etc.
+        pattern = r'(?<=[。！？…．；\!\?\.])+'
+    else:
+        # Western language sentence endings - requires space after punctuation
+        pattern = r'(?<=[.!?])\s+'
+    
+    # Split the text using the appropriate pattern
+    sentences = re.split(pattern, text)
+    
+    # Handle case of very long text with no proper sentence endings
+    result = []
+    for sentence in sentences:
+        if len(sentence) > 200:  # If sentence is too long, try to break it further
+            # Use commas, semicolons, or line breaks as secondary breaking points
+            subsents = re.split(r'(?<=[,;，；])\s*', sentence)
+            result.extend([s for s in subsents if s.strip()])
+        else:
+            if sentence.strip():
+                result.append(sentence)
+    
+    return result
 
 def get_language_name(code):
     languages = {
