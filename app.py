@@ -146,19 +146,18 @@ def get_grammar_explanation():
 
 def generate_grammar_explanation(sentence, source_lang, target_lang, model):
     prompt = f"""
-    Analyze the grammar of this {get_language_name(source_lang)} sentence for a {get_language_name(target_lang)} speaker:
+    Analyze this {get_language_name(source_lang)} sentence in detail for a {get_language_name(target_lang)} speaker:
     
     "{sentence}"
     
-    Provide 3-5 clear grammar points that would help a learner understand the structure of this sentence.
-    For each point:
-    1. Identify a specific grammar concept or pattern
-    2. Explain it briefly in accessible language
-    3. Show how it's used in the example sentence
+    Provide the following (in {get_language_name(target_lang)}):
+    1. **Structural Explanation**: Break down the sentence structure.
+    2. **Word-by-Word Translation**: List each word with its reading, meaning and grammatical explanation if any. 
+    3. **Grammar Points**: List grammar patterns with their difficulty level and frequency of usage. 
     
     Use ** around key terms or phrases that should be highlighted.
     
-    Format your response as a JSON object with a 'points' array containing each grammar point as a string. Note that you should give your answer in {get_language_name(target_lang)}.
+    Format your response as a JSON object with a 'points' array containing each grammar point as a string. 
     """
     
     try:
