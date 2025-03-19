@@ -142,7 +142,7 @@ def get_grammar_explanation():
     target_lang = data.get('targetLang', 'en')
     
     explanation = generate_grammar_explanation(sentence, source_lang, target_lang, model)
-    return jsonify(explanation)
+    return explanation
 
 def generate_grammar_explanation(sentence, source_lang, target_lang, model):
     prompt = f"""
@@ -156,41 +156,12 @@ def generate_grammar_explanation(sentence, source_lang, target_lang, model):
     3. **Grammar Points**: List grammar patterns with their difficulty level and frequency of usage. 
     
     Use ** around key terms or phrases that should be highlighted.
-    
-    Format your response as a JSON object with a 'points' array containing each grammar point as a string. 
     """
     
     try:
         response = model.generate_content(prompt)
-        response_text = response.text
-        
-        try:
-            # Try to extract JSON from response
-            json_match = re.search(r'```(?:json)?\n(.*?)\n```', response_text, re.DOTALL)
-            if json_match:
-                return json.loads(json_match.group(1))
-            
-            # If direct JSON extraction fails, try to parse response as JSON
-            return json.loads(response_text)
-        except json.JSONDecodeError as e:
-            # If parsing fails, manually process the response
-            print(f"Error parsing grammar explanation JSON: {e}")
-            print(f"Raw response: {response_text}")
-            
-            # Split response into points based on numbered list or double newlines
-            points = []
-            if re.match(r'^\d+\.', response_text, re.MULTILINE):
-                points = re.split(r'\n(?=\d+\.)', response_text)
-            else:
-                points = response_text.split('\n\n')
-            
-            # Clean up and ensure strings
-            points = [str(p.strip()) for p in points if p.strip()]
-            
-            return {
-                "points": points,
-                "warning": "Response was not in expected JSON format. Manual parsing applied."
-            }
+        return response.text
+     
     except Exception as e:
         print(f"Error generating grammar explanation: {e}")
         return {
