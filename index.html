@@ -2107,130 +2107,132 @@
     }
     
     // Append a new translation result to the output area
-    function appendTranslation(result) {
-      // Remove loading indicator if it's the first result
-      const loadingElement = document.querySelector('.loading');
-      if (loadingElement) {
+function appendTranslation(result) {
+    // Remove loading indicator if it's the first result
+    const loadingElement = document.querySelector('.loading');
+    if (loadingElement) {
         loadingElement.remove();
-      }
-      
-      const outputContent = document.getElementById('output-content');
-      const sentenceBlock = document.createElement('div');
-      sentenceBlock.className = 'sentence-block';
-      
-      // Check if we have an error
-      if (result.error) {
+    }
+    
+    const outputContent = document.getElementById('output-content');
+    const sentenceBlock = document.createElement('div');
+    sentenceBlock.className = 'sentence-block';
+    
+    // Check if we have an error
+    if (result.error) {
         sentenceBlock.innerHTML = `
-          <div class="error">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Error processing sentence</h3>
-            <p>${result.error}</p>
-          </div>
+            <div class="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Error processing sentence</h3>
+                <p>${result.error}</p>
+            </div>
         `;
         outputContent.appendChild(sentenceBlock);
         return;
-      }
-      
-      // Get sentence number
-      const sentenceNumber = outputContent.children.length + 1;
-      
-      // Create HTML for the block
-      let romanizationHtml = '';
-      if (result.romanization) {
+    }
+    
+    // Get sentence number
+    const sentenceNumber = outputContent.children.length + 1;
+    
+    // Create HTML for the block
+    let romanizationHtml = '';
+    if (result.romanization) {
         romanizationHtml = `<div class="romanization">${result.romanization}</div>`;
-      }
-      
-      sentenceBlock.innerHTML = `
+    }
+    
+    sentenceBlock.innerHTML = `
         <div class="sentence-header">
-          <div class="sentence-number">Sentence ${sentenceNumber}</div>
-          <div class="display-toggle">
-            <label>Display:</label>
-            <div class="toggle-btn">
-              <div class="toggle-option active" data-mode="traditional">Text</div>
-              <div class="toggle-option" data-mode="aligned">Aligned</div>
+            <div class="sentence-number">Sentence ${sentenceNumber}</div>
+            <div class="display-toggle">
+                <label>Display:</label>
+                <div class="toggle-btn">
+                    <div class="toggle-option active" data-mode="traditional">Text</div>
+                    <div class="toggle-option" data-mode="aligned">Aligned</div>
+                </div>
             </div>
-          </div>
         </div>
         <div class="original">${result.original}</div>
         ${romanizationHtml}
         <div class="traditional-view">
-          <div class="word-mapping">${result.wordByWord}</div>
-          <div class="translation">${result.fluentTranslation}</div>
+            <div class="word-mapping">${result.wordByWord}</div>
+            <div class="translation">${result.fluentTranslation}</div>
         </div>
         <div class="aligned-view" style="display: none;">
-          <div class="aligned-translation">
-            <!-- Will be populated by JavaScript -->
-          </div>
+            <div class="aligned-translation">
+                <!-- Will be populated by JavaScript -->
+            </div>
         </div>
         <button class="grammar-btn" title="Grammar explanation">
-          <i class="fas fa-book"></i>
+            <i class="fas fa-book"></i>
         </button>
         <button class="speak-btn" title="Listen">
-          <i class="fas fa-volume-up"></i>
+            <i class="fas fa-volume-up"></i>
         </button>
-      `;
-      
-      outputContent.appendChild(sentenceBlock);
-      
-      // Set up the aligned view
-      const alignedContainer = sentenceBlock.querySelector('.aligned-translation');
-      const originalWords = result.original.split(/\s+/);
-      const translatedWords = result.wordByWord.split(/\s+/);
-      
-      // Make sure we have the same number of words
-      const minLength = Math.min(originalWords.length, translatedWords.length);
-      
-      for (let i = 0; i < minLength; i++) {
+    `;
+    
+    outputContent.appendChild(sentenceBlock);
+    
+    // Set up the aligned view
+    const alignedContainer = sentenceBlock.querySelector('.aligned-translation');
+    // Use romanization for alignment if available, otherwise use original
+    const textToSplit = result.romanization || result.original;
+    const originalWords = textToSplit.split(/\s+/);
+    const translatedWords = result.wordByWord.split(/\s+/);
+    
+    // Make sure we have the same number of words
+    const minLength = Math.min(originalWords.length, translatedWords.length);
+    
+    for (let i = 0; i < minLength; i++) {
         const wordPair = document.createElement('div');
         wordPair.className = 'word-pair';
         wordPair.innerHTML = `
-          <div class="original-word">${originalWords[i]}</div>
-          <div class="word-pair-divider"></div>
-          <div class="translation-word">${translatedWords[i]}</div>
+            <div class="original-word">${originalWords[i]}</div>
+            <div class="word-pair-divider"></div>
+            <div class="translation-word">${translatedWords[i]}</div>
         `;
         alignedContainer.appendChild(wordPair);
-      }
-      
-      // Set up display toggle
-      sentenceBlock.querySelector('.toggle-btn').addEventListener('click', function(e) {
+    }
+    
+    // Set up display toggle
+    sentenceBlock.querySelector('.toggle-btn').addEventListener('click', function(e) {
         if (e.target.classList.contains('toggle-option')) {
-          // Update active state
-          sentenceBlock.querySelectorAll('.toggle-option').forEach(option => {
-            option.classList.remove('active');
-          });
-          e.target.classList.add('active');
-          
-          // Show/hide views
-          const mode = e.target.dataset.mode;
-          if (mode === 'traditional') {
-            sentenceBlock.querySelector('.traditional-view').style.display = 'block';
-            sentenceBlock.querySelector('.aligned-view').style.display = 'none';
-          } else {
-            sentenceBlock.querySelector('.traditional-view').style.display = 'none';
-            sentenceBlock.querySelector('.aligned-view').style.display = 'block';
-          }
+            // Update active state
+            sentenceBlock.querySelectorAll('.toggle-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            e.target.classList.add('active');
+            
+            // Show/hide views
+            const mode = e.target.dataset.mode;
+            if (mode === 'traditional') {
+                sentenceBlock.querySelector('.traditional-view').style.display = 'block';
+                sentenceBlock.querySelector('.aligned-view').style.display = 'none';
+            } else {
+                sentenceBlock.querySelector('.traditional-view').style.display = 'none';
+                sentenceBlock.querySelector('.aligned-view').style.display = 'block';
+            }
         }
-      });
-      
-      // Set up text-to-speech
-      const speakButton = sentenceBlock.querySelector('.speak-btn');
-      speakButton.addEventListener('click', function() {
+    });
+    
+    // Set up text-to-speech
+    const speakButton = sentenceBlock.querySelector('.speak-btn');
+    speakButton.addEventListener('click', function() {
         const text = result.original;
         speak(text, document.getElementById('source-lang').value);
-      });
-      
-      // Set up grammar explanation
-      const grammarButton = sentenceBlock.querySelector('.grammar-btn');
-      grammarButton.addEventListener('click', function() {
+    });
+    
+    // Set up grammar explanation
+    const grammarButton = sentenceBlock.querySelector('.grammar-btn');
+    grammarButton.addEventListener('click', function() {
         const existingExplanation = sentenceBlock.nextElementSibling;
         if (existingExplanation && existingExplanation.classList.contains('grammar-explanation')) {
-          existingExplanation.remove();
-          return;
+            existingExplanation.remove();
+            return;
         }
         
         getGrammarExplanation(result.original, document.getElementById('source-lang').value, this);
-      });
-    }
+    });
+}
     
     // Grammar explanation function with API key handling
     function getGrammarExplanation(sentence, sourceLang, grammarButton) {
