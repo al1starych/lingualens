@@ -7,6 +7,85 @@ import time
 
 app = Flask(__name__)
 
+def uses_non_latin_script(lang_code):
+    """
+    Determines if a language primarily uses a non-Latin writing system.
+    
+    Args:
+        lang_code: The ISO 639-1 or 639-2 language code
+        
+    Returns:
+        bool: True if the language uses a non-Latin script, False otherwise
+    """
+    # Languages that use non-Latin scripts
+    non_latin_scripts = {
+        # East Asian scripts
+        'zh': 'Chinese (Hanzi)',
+        'ja': 'Japanese (Kanji, Hiragana, Katakana)',
+        'ko': 'Korean (Hangul)',
+        
+        # Cyrillic script
+        'ru': 'Russian',
+        'uk': 'Ukrainian',
+        'be': 'Belarusian',
+        'bg': 'Bulgarian',
+        'sr': 'Serbian (Cyrillic)',
+        'mk': 'Macedonian',
+        'kk': 'Kazakh',
+        'ky': 'Kyrgyz',
+        'mn': 'Mongolian (Cyrillic)',
+        'tg': 'Tajik',
+        
+        # Arabic script
+        'ar': 'Arabic',
+        'fa': 'Persian (Farsi)',
+        'ur': 'Urdu',
+        'ps': 'Pashto',
+        'sd': 'Sindhi',
+        'ug': 'Uyghur',
+        'ckb': 'Kurdish (Sorani)',
+        'ms-Arab': 'Malay (Jawi)',
+        
+        # Indic scripts
+        'hi': 'Hindi (Devanagari)',
+        'bn': 'Bengali',
+        'ta': 'Tamil',
+        'te': 'Telugu',
+        'mr': 'Marathi',
+        'ne': 'Nepali',
+        'pa': 'Punjabi (Gurmukhi)',
+        'gu': 'Gujarati',
+        'or': 'Odia',
+        'kn': 'Kannada',
+        'ml': 'Malayalam',
+        'si': 'Sinhala',
+        'sa': 'Sanskrit',
+        
+        # Other scripts
+        'th': 'Thai',
+        'lo': 'Lao',
+        'km': 'Khmer',
+        'my': 'Burmese (Myanmar)',
+        'am': 'Amharic',
+        'ti': 'Tigrinya',
+        'he': 'Hebrew',
+        'yi': 'Yiddish',
+        'ka': 'Georgian',
+        'hy': 'Armenian',
+        'el': 'Greek',
+        'dv': 'Dhivehi (Thaana)',
+        
+        # Ethiopic script
+        'am': 'Amharic',
+        'ti': 'Tigrinya',
+        
+        # Other scripts
+        'bo': 'Tibetan',
+        'dz': 'Dzongkha',
+    }
+    
+    return lang_code in non_latin_scripts
+
 @app.route('/')
 def index():
     return send_file('index.html')
@@ -121,32 +200,41 @@ def generate_grammar_explanation(sentence, source_lang, target_lang, model):
         }
 
 def process_sentence(sentence, source_lang, target_lang, model):
-    # Check if romanization is needed (for Chinese, Japanese, Korean)
-    needs_romanization = source_lang in ['zh', 'ja', 'ko']
+    # Check if romanization is needed for non-Latin script languages
+    needs_romanization = uses_non_latin_script(source_lang)
     
-    romanization_request = ""
+    romanization = ""
     if needs_romanization:
-        romanization_type = "pinyin" if source_lang == "zh" else "romaji" if source_lang == "ja" else "romanized Korean"
-        romanization_request = f"""
-        5. romanization: The {romanization_type} pronunciation guide for the original text
+        # First, get the romanization
+        romanization_prompt = f"""
+        Provide the romanized pronunciation guide for the following {get_language_name(source_lang)} sentence using the most widely accepted romanization standard for this language:
+        "{sentence}"
+        Return only the romanized text.
         """
+        romanization_response = model.generate_content(romanization_prompt)
+        romanization = romanization_response.text.strip()
+    
+    # Use the romanized text for word-by-word translation if available
+    text_to_process = romanization if needs_romanization else sentence
     
     # Form the prompt for the Gemini model
     prompt = f"""
-    Process this {get_language_name(source_lang)} sentence using the Birkenbihl method for a {get_language_name(target_lang)} speaker:
+    Process this {get_language_name(source_lang)} sentence using the Birkenbihl method for a {get_language_name(target_lang)} speaker. The sentence is provided in {'romanized form' if needs_romanization else 'its original form'} for clarity, but the original sentence is included for context.
     
-    "{sentence}"
+    Original sentence: "{sentence}"
+    {'Romanized sentence: "' + romanization + '"' if needs_romanization else ''}
+    Text to process: "{text_to_process}"
     
     Return a JSON object with the following fields:
     1. original: The original sentence
     2. wordByWord: A word-by-word literal translation preserving original word order
     3. fluentTranslation: A natural, fluent translation of the sentence
     4. wordTranslations: A dictionary mapping each word in the original to its translation
-    {romanization_request}
+    {'5. romanization: The romanized pronunciation guide for the original text' if needs_romanization else ''}
     
     IMPORTANT: 
     - Provide all translations (wordByWord and fluentTranslation) in {get_language_name(target_lang)}
-    - Make sure the wordByWord translation has EXACTLY the same number of words as the original sentence
+    - Make sure the wordByWord translation has EXACTLY the same number of words as the text to process
     - If a single source word translates to multiple target words, hyphenate them (e.g., "bonjour" -> "good-morning")
     - If multiple source words translate to one target word, repeat the target word for each source word
     """
@@ -163,25 +251,24 @@ def process_sentence(sentence, source_lang, target_lang, model):
         else:
             result = json.loads(response_text)
 
-        # Split the original sentence into words
-        original_words = sentence.split()
-        print(f"Original words: {len(original_words)} - {original_words}")
+        # Split the text to process into words (use romanized text if available)
+        text_to_split = romanization if needs_romanization else sentence
+        original_words = text_to_split.split()
+        print(f"Words to process: {len(original_words)} - {original_words}")
 
         # Clean punctuation from words for lookup in wordTranslations
-        # For example, "sei," becomes "sei" for dictionary lookup
         cleaned_original_words = [re.sub(r'[.,!?;:"\'-]', '', word) for word in original_words]
 
         # Initialize the word-by-word translation list
         word_by_word_words = []
 
-        # For each original word, find its translation
+        # For each word, find its translation
         for idx, (orig_word, cleaned_word) in enumerate(zip(original_words, cleaned_original_words)):
             # Check if the cleaned word exists in wordTranslations
             if cleaned_word in result.get('wordTranslations', {}):
                 translation = result['wordTranslations'][cleaned_word]
                 # If the original word had punctuation, append it to the translation
                 if orig_word != cleaned_word:
-                    # Extract punctuation from the original word
                     punctuation = orig_word[len(cleaned_word):]
                     translation += punctuation
                 word_by_word_words.append(translation)
@@ -212,6 +299,10 @@ def process_sentence(sentence, source_lang, target_lang, model):
         # Verify the word count matches
         if len(original_words) != len(word_by_word_words):
             print(f"Warning: Word count mismatch after processing! Original: {len(original_words)}, WordByWord: {len(word_by_word_words)}")
+
+        # Ensure romanization is included in the result
+        if needs_romanization:
+            result['romanization'] = romanization
 
         return result
 
