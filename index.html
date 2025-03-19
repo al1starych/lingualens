@@ -2275,31 +2275,33 @@ function appendTranslation(result) {
       apiKey: apiKey
     }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.error) {
-      document.getElementById(explanationId).innerHTML = `
-        <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
-        <p>Unable to generate grammar explanation: ${data.error}</p>
-      `;
-      return;
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    // Initialize raw content
-    let rawContent = '';
-    
-    
-    // Display the raw content as-is, wrapped in <pre> to preserve whitespace and line breaks
+    return response.text();
+  })
+  .then(text => {
+    // Enhanced formatting
+    let formattedText = text
+      .replace(/\n/g, '<br>')  // Line breaks
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')  // Bold
+      .replace(/^\s*(\d+\.\s+.*)$/gm, '<h3>$1</h3>')  // Numbered sections as headings
+      .replace(/^\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|$/gm, 
+        '<tr><td>$1</td><td>$2</td><td>$3</td><td>$4</td></tr>')  // Table rows
+      .replace(/^\s*[-*]\s+(.*)$/gm, '<li>$1</li>');  // Bullet points
+
+    // Wrap table content
+    formattedText = formattedText.replace(/(<tr>.*<\/tr>)/s, '<table border="1">$1</table>');
+
     document.getElementById(explanationId).innerHTML = `
-      <div class="grammar-title"><i class="fas fa-book"></i> Grammar Explanation</div>
-      <pre>${rawContent}</pre>
+      <div style="white-space: pre-wrap; font-family: Arial, sans-serif; line-height: 1.5; padding: 10px;">
+        ${formattedText}
+      </div>
     `;
   })
   .catch(error => {
-    document.getElementById(explanationId).innerHTML = `
-      <div class="grammar-title"><i class="fas fa-exclamation-triangle"></i> Error</div>
-      <p>Unable to generate grammar explanation: ${error.message}</p>
-    `;
+    document.getElementById(explanationId).innerHTML = `Error: ${error.message}`;
   });
 }
     
