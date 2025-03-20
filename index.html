@@ -1703,7 +1703,7 @@
     <div class="input-area">
       <div class="textarea-container">
         <textarea id="input-text" placeholder="Enter text in the foreign language you want to learn..."></textarea>
-        <div class="character-count">0/1000</div>
+        <div class="character-count">0/30000</div>
       </div>
       <div class="example-texts">
         <div class="example-text" data-lang="fr">Bonjour, comment allez-vous?</div>
@@ -1798,8 +1798,8 @@
     const charCount = document.querySelector('.character-count');
     
     textarea.addEventListener('input', function() {
-      charCount.textContent = `${this.value.length}/1000`;
-      if (this.value.length > 1000) {
+      charCount.textContent = `${this.value.length}/30000`;
+      if (this.value.length > 30000) {
         charCount.style.color = 'var(--danger)';
       } else {
         charCount.style.color = 'var(--text-light)';
@@ -1827,7 +1827,7 @@
     // Clear button
     document.getElementById('clear-btn').addEventListener('click', function() {
       document.getElementById('input-text').value = '';
-      charCount.textContent = '0/1000';
+      charCount.textContent = '0/30000';
       document.getElementById('output-area').classList.remove('visible');
     });
     
@@ -1838,7 +1838,7 @@
       example.addEventListener('click', function() {
         document.getElementById('input-text').value = this.textContent;
         document.getElementById('source-lang').value = this.getAttribute('data-lang');
-        charCount.textContent = `${this.textContent.length}/1000`;
+        charCount.textContent = `${this.textContent.length}/30000`;
       });
     });
     
@@ -1911,7 +1911,7 @@
         historyItem.addEventListener('click', function() {
           document.getElementById('input-text').value = this.dataset.text;
           document.getElementById('source-lang').value = this.dataset.sourceLang;
-          charCount.textContent = `${this.dataset.text.length}/1000`;
+          charCount.textContent = `${this.dataset.text.length}/30000`;
           document.getElementById('saved-translations').classList.remove('visible');
           processText();
         });
