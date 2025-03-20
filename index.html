@@ -109,6 +109,33 @@
       animation: slideUp 0.8s ease;
       box-shadow: 0 4px 6px rgba(91, 104, 255, 0.1);
     }
+
+    .logout-btn {
+      position: fixed;
+      top: 1rem;
+      right: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    
+    .logout-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .logout-btn i {
+      margin-right: 0.5rem;
+    }
+
     .info-icon {
       margin-right: 1rem;
       font-size: 1.5rem;
@@ -1135,6 +1162,10 @@
   </style>
 </head>
 <body>
+    <!-- Add logout button -->
+    <a href="/logout" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
   <div class="container">
     <div class="top-controls">
       <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode">
