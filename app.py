@@ -1,11 +1,43 @@
-from flask import Flask, request, Response, send_file, jsonify
+from flask import Flask, request, Response, send_file, jsonify, session, redirect, url_for, render_template_string
 import google.generativeai as genai
 import re
 import json
 import os
 import time
+from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'lingualens_secret_key')  # Set a secret key for sessions
+
+# File to store paid email addresses
+PAID_EMAILS_FILE = 'paid_emails.txt'
+
+# Create the file if it doesn't exist
+if not os.path.exists(PAID_EMAILS_FILE):
+    with open(PAID_EMAILS_FILE, 'w') as f:
+        f.write('')  # Create empty file
+
+def is_email_verified(email):
+    """Check if the email is in the paid emails list"""
+    if not email:
+        return False
+        
+    try:
+        with open(PAID_EMAILS_FILE, 'r') as f:
+            paid_emails = [line.strip().lower() for line in f.readlines()]
+            return email.lower() in paid_emails
+    except Exception as e:
+        print(f"Error checking email verification: {e}")
+        return False
+
+def login_required(f):
+    """Decorator to require login for routes"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'verified_email' not in session:
+            return redirect(url_for('verification_page'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 def uses_non_latin_script(lang_code):
     """
@@ -87,10 +119,34 @@ def uses_non_latin_script(lang_code):
     return lang_code in non_latin_scripts
 
 @app.route('/')
-def index():
+def verification_page():
+    """Show the verification page when accessing the root URL"""
+    if 'verified_email' in session:
+        return redirect(url_for('app_page'))
+    
+    with open('verify.html', 'r') as f:
+        return f.read()
+
+@app.route('/app')
+@login_required
+def app_page():
+    """Main application page, requires login"""
     return send_file('index.html')
 
+@app.route('/verify-email', methods=['POST'])
+def verify_email():
+    """Verify if an email is in the paid list"""
+    data = request.get_json()
+    email = data.get('email', '').strip()
+    
+    if is_email_verified(email):
+        session['verified_email'] = email
+        return jsonify({'verified': True})
+    else:
+        return jsonify({'verified': False})
+
 @app.route('/process', methods=['POST'])
+@login_required
 def process_text():
     data = request.get_json()
     
@@ -120,8 +176,8 @@ def process_text():
     
     return Response(generate(), mimetype='application/json')
 
-
 @app.route('/grammar-explanation', methods=['POST'])
+@login_required
 def get_grammar_explanation():
     data = request.get_json()
     
@@ -143,6 +199,12 @@ def get_grammar_explanation():
     
     explanation = generate_grammar_explanation(sentence, source_lang, target_lang, model)
     return explanation
+
+@app.route('/logout')
+def logout():
+    """Log out the user by clearing the session"""
+    session.pop('verified_email', None)
+    return redirect(url_for('verification_page'))
 
 def generate_grammar_explanation(sentence, source_lang, target_lang, model):
     prompt = f"""
@@ -189,7 +251,7 @@ def process_sentence(sentence, source_lang, target_lang, model):
     
     # Form the prompt for the Gemini model
     prompt = f"""
-    Process this {get_language_name(source_lang)} sentence using the Birkenbihl method for a {get_language_name(target_lang)} speaker. The sentence is provided in {'romanized form' if needs_romanization else 'its original form'} for clarity, but the original sentence is included for context.
+    Process this {get_language_name(source_lang)} sentence using the Birkenbihl method for a {get_language_name(target_lang)} speaker. The sentence is provided in {'romanized form' if needs_romanization else 'original form'}.
     
     Original sentence: "{sentence}"
     {'Romanized sentence: "' + romanization + '"' if needs_romanization else ''}
@@ -571,4 +633,9 @@ def get_language_name(code):
     return languages.get(code, code)
 
 if __name__ == '__main__':
+    # Ensure the paid emails file exists
+    if not os.path.exists(PAID_EMAILS_FILE):
+        with open(PAID_EMAILS_FILE, 'w') as f:
+            f.write('')
+            
     app.run(debug=True, host='0.0.0.0', port=5000)
