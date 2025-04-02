@@ -160,7 +160,7 @@ def process_text():
     
     # Configure the Gemini API with the user's API key
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    model = genai.GenerativeModel("gemini-2.5-pro-exp-03-25")
     
     text = data['text']
     source_lang = data.get('sourceLang', 'fr')
